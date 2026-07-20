@@ -404,103 +404,123 @@ function HomePage({ onOpenLogin }) {
 
   <div className="packages-grid">
     <div className="package-card">
-      <span className="package-badge">
-        MOST AFFORDABLE
-      </span>
+  <div className="package-card-header">
 
-      <div className="package-icon">🚀</div>
+    <span className="package-badge">
+      MOST AFFORDABLE
+    </span>
 
-      <h3>Starter Package</h3>
-
-      <p className="package-description">
-        Ideal for aspiring entrepreneurs looking
-        for an affordable and business-ready
-        franchise package.
-      </p>
-
-      <ul className="package-list">
-        <li>✔ Operate one store location</li>
-        <li>✔ Franchise equipment</li>
-        <li>✔ Initial products</li>
-        <li>✔ Marketing materials</li>
-        <li>✔ Free training</li>
-        <li>✔ Customer service support</li>
-      </ul>
-
-      <button
-        type="button"
-        className="package-button"
-        onClick={scrollToInquiry}
-      >
-        Request Details
-      </button>
+    <div className="package-icon">
+      🚀
     </div>
+
+    <h3>Starter Package</h3>
+
+    <p className="package-description">
+      Ideal for aspiring entrepreneurs
+      looking for an affordable and
+      business-ready franchise package.
+    </p>
+
+  </div>
+
+  <ul className="package-list">
+    <li>✓ Operate one store location</li>
+    <li>✓ Franchise equipment</li>
+    <li>✓ Initial products</li>
+    <li>✓ Marketing materials</li>
+    <li>✓ Free training</li>
+    <li>✓ Customer service support</li>
+  </ul>
+
+  <button
+    type="button"
+    className="package-button"
+    onClick={scrollToInquiry}
+  >
+    Request Details
+  </button>
+</div>
 
     <div className="package-card featured-package">
-      <span className="package-badge featured-badge">
-        MOST POPULAR
-      </span>
+  <div className="package-card-header">
 
-      <div className="package-icon">⭐</div>
+    <span className="package-badge featured-badge">
+      MOST POPULAR
+    </span>
 
-      <h3>Preferred Package</h3>
-
-      <p className="package-description">
-        Perfect for entrepreneurs seeking
-        expansion opportunities with additional
-        business privileges.
-      </p>
-
-      <ul className="package-list">
-        <li>✔ Operate up to two stores</li>
-        <li>✔ Exclusive territory</li>
-        <li>✔ Franchise equipment and products</li>
-        <li>✔ Marketing materials</li>
-        <li>✔ Free training</li>
-        <li>✔ Customer service support</li>
-      </ul>
-
-      <button
-        type="button"
-        className="package-button featured-button"
-        onClick={scrollToInquiry}
-      >
-        Request Details
-      </button>
+    <div className="package-icon">
+      ⭐
     </div>
+
+    <h3>Preferred Package</h3>
+
+    <p className="package-description">
+      Perfect for entrepreneurs seeking
+      expansion opportunities with
+      additional business privileges.
+    </p>
+
+  </div>
+
+  <ul className="package-list">
+    <li>✓ Operate up to two stores</li>
+    <li>✓ Exclusive territory</li>
+    <li>✓ Franchise equipment and products</li>
+    <li>✓ Marketing materials</li>
+    <li>✓ Free training</li>
+    <li>✓ Customer service support</li>
+  </ul>
+
+  <button
+    type="button"
+    className="package-button"
+    onClick={scrollToInquiry}
+  >
+    Request Details
+  </button>
+</div>
 
     <div className="package-card">
-      <span className="package-badge">
-        BEST VALUE
-      </span>
+  <div className="package-card-header">
 
-      <div className="package-icon">👑</div>
+    <span className="package-badge featured-badge">
+      BEST VALUE
+    </span>
 
-      <h3>Best Choice Package</h3>
+    <div className="package-icon">
+  👑
+</div>
 
-      <p className="package-description">
-        Our most comprehensive package designed
-        for long-term growth and multi-store
-        operations.
-      </p>
+    <h3>Best Choice</h3>
 
-      <ul className="package-list">
-        <li>✔ Operate up to three stores</li>
-        <li>✔ Exclusive territory</li>
-        <li>✔ Franchise equipment and products</li>
-        <li>✔ Marketing materials</li>
-        <li>✔ Free training</li>
-        <li>✔ Customer service support</li>
-      </ul>
+    <p className="package-description">
+      Our most comprehensive package
+designed for long-term growth and
+multi-store operations.
 
-      <button
-        type="button"
-        className="package-button"
-        onClick={scrollToInquiry}
-      >
-        Request Details
-      </button>
-    </div>
+    </p>
+
+  </div>
+
+  <ul className="package-list">
+    <li>✓ Operate up to three stores</li>
+    <li>✓ Exclusive territory</li>
+    <li>✓ Franchise equipment and products</li>
+    <li>✓ Marketing materials</li>
+    <li>✓ Free training</li>
+    <li>✓ Customer service support</li>
+  </ul>
+
+  <button
+    type="button"
+    className="package-button"
+    onClick={scrollToInquiry}
+  >
+    Request Details
+  </button>
+</div>
+  
   </div>
 </section>
 
