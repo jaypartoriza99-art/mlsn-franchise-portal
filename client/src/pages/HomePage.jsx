@@ -492,7 +492,7 @@ function HomePage({ onOpenLogin }) {
   👑
 </div>
 
-    <h3>Best Choice</h3>
+    <h3>Best Choice Package</h3>
 
     <p className="package-description">
       Our most comprehensive package
