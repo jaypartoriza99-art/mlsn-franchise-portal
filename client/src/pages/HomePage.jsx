@@ -235,25 +235,28 @@ function HomePage({ onOpenLogin }) {
           </div>
 
           <div className="why-card">
-            <h3>Operational Assistance</h3>
+  <h3>
+    Business Registration Assistance
+  </h3>
 
-            <p>
-              Receive continued support for
-              operational and product-related
-              concerns.
-            </p>
-          </div>
+  <p>
+    Guidance in business permits,
+    registrations, and documentary
+    requirements.
+  </p>
+</div>
 
-          <div className="why-card">
-            <h3>Nationwide Support</h3>
+<div className="why-card">
+  <h3>
+    Franchise Growth Support
+  </h3>
 
-            <p>
-              Our team assists franchisees across
-              different locations in the
-              Philippines.
-            </p>
-          </div>
-
+  <p>
+    Continuous assistance to help
+    franchisees grow and expand their
+    business.
+  </p>
+</div>
           <div className="why-card">
             <h3>Customer Service Portal</h3>
 
@@ -265,137 +268,7 @@ function HomePage({ onOpenLogin }) {
           </div>
         </div>
       </section>
-<section
-  id="packages"
-  className="packages-section"
->
-  <h2>Our Franchise Packages</h2>
 
-  <p className="package-description">
-    Start your business journey with our
-    affordable and business-ready franchise
-    packages.
-  </p>
-
-  <div className="packages-grid">
-
-    <div className="package-card">
-      <span className="package-tag">
-        Affordable
-      </span>
-
-      <h3>Preferred Package</h3>
-
-      <ul>
-        <li>
-          ✔ Business Equipment
-        </li>
-
-        <li>
-          ✔ Initial Products
-        </li>
-
-        <li>
-          ✔ Marketing Materials
-        </li>
-
-        <li>
-          ✔ Training Support
-        </li>
-
-        <li>
-          ✔ Customer Service Support
-        </li>
-      </ul>
-
-      <button
-        type="button"
-        onClick={scrollToInquiry}
-      >
-        Inquire Now
-      </button>
-    </div>
-
-    <div className="package-card featured-package">
-
-      <span className="featured-badge">
-        MOST POPULAR
-      </span>
-
-      <h3>Best Choice Package</h3>
-
-      <ul>
-        <li>
-          ✔ Complete Business Setup
-        </li>
-
-        <li>
-          ✔ Equipment & Products
-        </li>
-
-        <li>
-          ✔ Marketing Assistance
-        </li>
-
-        <li>
-          ✔ Operational Guidance
-        </li>
-
-        <li>
-          ✔ Continuous Partnership
-        </li>
-      </ul>
-
-      <button
-        type="button"
-        onClick={scrollToInquiry}
-      >
-        Inquire Now
-      </button>
-    </div>
-
-    <div className="package-card">
-
-      <span className="package-tag">
-        Expansion
-      </span>
-
-      <h3>
-        Provincial Distributor
-      </h3>
-
-      <ul>
-        <li>
-          ✔ Exclusive Territory
-        </li>
-
-        <li>
-          ✔ Bulk Product Discounts
-        </li>
-
-        <li>
-          ✔ Business Support
-        </li>
-
-        <li>
-          ✔ Marketing Assistance
-        </li>
-
-        <li>
-          ✔ Long-Term Partnership
-        </li>
-      </ul>
-
-      <button
-        type="button"
-        onClick={scrollToInquiry}
-      >
-        Inquire Now
-      </button>
-    </div>
-
-  </div>
-</section>
       {/* CONCEPTS */}
       <section
         id="concepts"
@@ -519,6 +392,119 @@ function HomePage({ onOpenLogin }) {
           </div>
         </div>
       </section>
+{/* FRANCHISE PACKAGES */}
+<section
+  id="packages"
+  className="website-section"
+>
+  <h2>Our Franchise Packages</h2>
+
+  <p>
+    Choose the franchise package that
+    best suits your business goals and
+    investment preferences.
+  </p>
+
+  <div className="concept-grid">
+
+    <div className="concept-card">
+      <h3>Single Concept</h3>
+
+      <p>
+        Ideal for entrepreneurs who wish
+        to start with a single franchise
+        concept.
+      </p>
+
+      <ul>
+        <li>
+          ✔ Operate one store location
+        </li>
+      </ul>
+
+      <button
+        type="button"
+        className="concept-inquire-button"
+        onClick={scrollToInquiry}
+      >
+        Request Details
+      </button>
+    </div>
+
+    <div className="concept-card">
+      <h3>Starter Package</h3>
+
+      <p>
+        Designed for aspiring
+        entrepreneurs seeking an
+        affordable business opportunity.
+      </p>
+
+      <ul>
+        <li>
+          ✔ Operate up to two stores
+        </li>
+      </ul>
+
+      <button
+        type="button"
+        className="concept-inquire-button"
+        onClick={scrollToInquiry}
+      >
+        Request Details
+      </button>
+    </div>
+
+    <div className="concept-card">
+      <h3>Preferred Package</h3>
+
+      <p>
+        Enhanced package offering
+        additional business benefits and
+        expansion opportunities.
+      </p>
+
+      <ul>
+        <li>
+          ✔ Operate up to two stores
+        </li>
+      </ul>
+
+      <button
+        type="button"
+        className="concept-inquire-button"
+        onClick={scrollToInquiry}
+      >
+        Request Details
+      </button>
+    </div>
+
+    <div className="concept-card">
+      <h3>Best Choice Package</h3>
+
+      <p>
+        Our most comprehensive package
+        designed for long-term business
+        growth and expansion.
+      </p>
+
+      <ul>
+        <li>
+          ✔ Operate up to three stores
+        </li>
+      </ul>
+
+      <button
+        type="button"
+        className="concept-inquire-button"
+        onClick={scrollToInquiry}
+      >
+        Request Details
+      </button>
+    </div>
+
+  </div>
+</section>
 
       {/* STATISTICS */}
       <section className="stats-section">
