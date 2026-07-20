@@ -21,13 +21,6 @@ function HomePage({ onOpenLogin }) {
   const [isSubmitting, setIsSubmitting] =
     useState(false)
 
-  function scrollToConcepts() {
-    document
-      .getElementById('concepts')
-      ?.scrollIntoView({
-        behavior: 'smooth',
-      })
-  }
 
   function scrollToInquiry() {
     document
@@ -154,6 +147,7 @@ function HomePage({ onOpenLogin }) {
         <div className="navbar-right">
           <a href="#about">About</a>
           <a href="#concepts">Concepts</a>
+          <a href="#packages">Packages</a>
           <a href="#inquiry">Inquire</a>
           <a href="#contact">Contact</a>
 
@@ -407,103 +401,71 @@ function HomePage({ onOpenLogin }) {
 
   <div className="concept-grid">
 
-    <div className="concept-card">
-      <h3>Single Concept</h3>
-
-      <p>
-        Ideal for entrepreneurs who wish
-        to start with a single franchise
-        concept.
-      </p>
-
-      <ul>
-        <li>
-          ✔ Operate one store location
-        </li>
-      </ul>
-
-      <button
-        type="button"
-        className="concept-inquire-button"
-        onClick={scrollToInquiry}
-      >
-        Request Details
-      </button>
-    </div>
 
     <div className="concept-card">
-      <h3>Starter Package</h3>
+  <h3>Starter Package</h3>
 
-      <p>
-        Designed for aspiring
-        entrepreneurs seeking an
-        affordable business opportunity.
-      </p>
+  <ul className="package-list">
+    <li>✔ Operate one store location</li>
+    <li>✔ Franchise equipment</li>
+    <li>✔ Initial products</li>
+    <li>✔ Marketing materials</li>
+    <li>✔ Free training</li>
+    <li>✔ Customer service support</li>
+  </ul>
 
-      <ul>
-        <li>
-          ✔ Operate up to two stores
-        </li>
-      </ul>
+  <button
+    type="button"
+    className="concept-inquire-button"
+    onClick={scrollToInquiry}
+  >
+    Request Details
+  </button>
+</div>
 
-      <button
-        type="button"
-        className="concept-inquire-button"
-        onClick={scrollToInquiry}
-      >
-        Request Details
-      </button>
-    </div>
+<div className="concept-card">
+  <h3>Preferred Package</h3>
 
-    <div className="concept-card">
-      <h3>Preferred Package</h3>
+  <ul className="package-list">
+    <li>✔ Operate up to two stores</li>
+    <li>✔ Exclusive territory</li>
+    <li>✔ Franchise equipment and products</li>
+    <li>✔ Marketing materials</li>
+    <li>✔ Free training</li>
+    <li>✔ Customer service support</li>
+  </ul>
 
-      <p>
-        Enhanced package offering
-        additional business benefits and
-        expansion opportunities.
-      </p>
+  <button
+    type="button"
+    className="concept-inquire-button"
+    onClick={scrollToInquiry}
+  >
+    Request Details
+  </button>
+</div>
 
-      <ul>
-        <li>
-          ✔ Operate up to two stores
-        </li>
-      </ul>
+<div className="concept-card">
+  <h3>Best Choice Package</h3>
 
-      <button
-        type="button"
-        className="concept-inquire-button"
-        onClick={scrollToInquiry}
-      >
-        Request Details
-      </button>
-    </div>
+  <ul className="package-list">
+    <li>✔ Operate up to three stores</li>
+    <li>✔ Exclusive territory</li>
+    <li>✔ Franchise equipment and products</li>
+    <li>✔ Marketing materials</li>
+    <li>✔ Free training</li>
+    <li>✔ Customer service support</li>
+  </ul>
 
-    <div className="concept-card">
-      <h3>Best Choice Package</h3>
+  <button
+    type="button"
+    className="concept-inquire-button"
+    onClick={scrollToInquiry}
+  >
+    Request Details
+  </button>
+</div>
 
-      <p>
-        Our most comprehensive package
-        designed for long-term business
-        growth and expansion.
-      </p>
-
-      <ul>
-        <li>
-          ✔ Operate up to three stores
-        </li>
-      </ul>
-
-      <button
-        type="button"
-        className="concept-inquire-button"
-        onClick={scrollToInquiry}
-      >
-        Request Details
-      </button>
-    </div>
-
-  </div>
+ </div>
 </section>
 
       {/* STATISTICS */}
