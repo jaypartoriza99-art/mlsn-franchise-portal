@@ -264,128 +264,185 @@ function HomePage({ onOpenLogin }) {
       </section>
 
       {/* CONCEPTS */}
-      <section
-        id="concepts"
-        className="website-section"
-      >
-        <h2>Our Franchise Concepts</h2>
+      <h2>Find the Perfect Franchise For You</h2>
 
-        <p>
-          Explore our food and beverage business
-          concepts and choose the opportunity
-          that matches your goals.
-        </p>
+<p>
+  From grilled chicken and coffee to frozen yogurt
+  and flavored chicken concepts, discover the
+  business opportunity that matches your goals.
+</p>
 
         <div className="concept-grid">
-          <div className="concept-card">
-            <h3>🍗 Inasal Express</h3>
 
-            <p>
-              Filipino grilled chicken business
-              concept.
-            </p>
+  {/* INASAL EXPRESS */}
+  <div className="concept-card upgraded-concept-card">
+    <div className="concept-image-area">
+      <div className="concept-emoji">🍗</div>
+    </div>
 
-            <button
-              type="button"
-              className="concept-inquire-button"
-              onClick={() => {
-                setInterestedConcept(
-                  'Inasal Express'
-                )
-                scrollToInquiry()
-              }}
-            >
-              Inquire Now
-            </button>
-          </div>
+    <div className="concept-card-content">
+      <span className="concept-category">
+        FOOD CONCEPT
+      </span>
 
-          <div className="concept-card">
-            <h3>☕ The Purple Blend</h3>
+      <h3>Inasal Express</h3>
 
-            <p>
-              Coffee and beverage franchise
-              concept.
-            </p>
+      <p>
+        Filipino grilled chicken franchise
+        concept designed for affordable and
+        accessible business operations.
+      </p>
 
-            <button
-              type="button"
-              className="concept-inquire-button"
-              onClick={() => {
-                setInterestedConcept(
-                  'The Purple Blend'
-                )
-                scrollToInquiry()
-              }}
-            >
-              Inquire Now
-            </button>
-          </div>
+      <button
+        type="button"
+        className="concept-inquire-button"
+        onClick={() => {
+          setInterestedConcept(
+            'Inasal Express'
+          )
+          scrollToInquiry()
+        }}
+      >
+        View Franchise Details
+      </button>
+    </div>
+  </div>
 
-          <div className="concept-card">
-            <h3>🍜 All Time Favorite</h3>
+  {/* PURPLE BLEND */}
+  <div className="concept-card upgraded-concept-card">
+    <div className="concept-image-area">
+      <div className="concept-emoji">☕</div>
+    </div>
 
-            <p>
-              Affordable food business package.
-            </p>
+    <div className="concept-card-content">
+      <span className="concept-category">
+        BEVERAGE CONCEPT
+      </span>
 
-            <button
-              type="button"
-              className="concept-inquire-button"
-              onClick={() => {
-                setInterestedConcept(
-                  'All Time Favorite'
-                )
-                scrollToInquiry()
-              }}
-            >
-              Inquire Now
-            </button>
-          </div>
+      <h3>The Purple Blend</h3>
 
-          <div className="concept-card">
-            <h3>🧋 Tsai Kaffe</h3>
+      <p>
+        Coffee and beverage franchise concept
+        offering modern café products and
+        refreshing drinks.
+      </p>
 
-            <p>
-              Milk tea and beverage business
-              concept.
-            </p>
+      <button
+        type="button"
+        className="concept-inquire-button"
+        onClick={() => {
+          setInterestedConcept(
+            'The Purple Blend'
+          )
+          scrollToInquiry()
+        }}
+      >
+        View Franchise Details
+      </button>
+    </div>
+  </div>
 
-            <button
-              type="button"
-              className="concept-inquire-button"
-              onClick={() => {
-                setInterestedConcept(
-                  'Tsai Kaffe'
-                )
-                scrollToInquiry()
-              }}
-            >
-              Inquire Now
-            </button>
-          </div>
+  {/* YOGU EXPRESS */}
+<div className="concept-card upgraded-concept-card">
+  <div className="concept-image-area">
+    <div className="concept-emoji">🍦</div>
+  </div>
 
-          <div className="concept-card">
-            <h3>🍟 Crispy Fries</h3>
+  <div className="concept-card-content">
+    <span className="concept-category">
+      DESSERT CONCEPT
+    </span>
 
-            <p>
-              Snack and fries business concept.
-            </p>
+    <h3>Yogu Express</h3>
 
-            <button
-              type="button"
-              className="concept-inquire-button"
-              onClick={() => {
-                setInterestedConcept(
-                  'Crispy Fries'
-                )
-                scrollToInquiry()
-              }}
-            >
-              Inquire Now
-            </button>
-          </div>
-        </div>
-      </section>
+    <p>
+      Korean-inspired frozen yogurt franchise
+      featuring customizable toppings and
+      healthy dessert options.
+    </p>
+
+    <button
+      type="button"
+      className="concept-inquire-button"
+      onClick={() => {
+        setInterestedConcept(
+          'Yogu Express'
+        )
+        scrollToInquiry()
+      }}
+    >
+      View Franchise Details
+    </button>
+  </div>
+</div>
+
+  {/* CFC */}
+<div className="concept-card upgraded-concept-card">
+  <div className="concept-image-area">
+    <div className="concept-emoji">🍗</div>
+  </div>
+
+  <div className="concept-card-content">
+    <span className="concept-category">
+      FOOD CONCEPT
+    </span>
+
+    <h3>CFC</h3>
+
+    <p>
+      Boneless fried chicken franchise
+      featuring different flavors paired
+      with signature milkshake varieties.
+    </p>
+
+    <button
+      type="button"
+      className="concept-inquire-button"
+      onClick={() => {
+        setInterestedConcept('CFC')
+        scrollToInquiry()
+      }}
+    >
+      View Franchise Details
+    </button>
+  </div>
+</div>
+
+  {/* CRISPY FRIES */}
+  <div className="concept-card upgraded-concept-card">
+    <div className="concept-image-area">
+      <div className="concept-emoji">🍟</div>
+    </div>
+
+    <div className="concept-card-content">
+      <span className="concept-category">
+        SNACK CONCEPT
+      </span>
+
+      <h3>Crispy Fries</h3>
+
+      <p>
+        Snack business concept offering
+        affordable and high-demand potato
+        products.
+      </p>
+
+      <button
+        type="button"
+        className="concept-inquire-button"
+        onClick={() => {
+          setInterestedConcept(
+            'Crispy Fries'
+          )
+          scrollToInquiry()
+        }}
+      >
+        View Franchise Details
+      </button>
+    </div>
+  </div>
+
+</div>
 {/* FRANCHISE PACKAGES */}
 <section
   id="packages"
@@ -709,13 +766,13 @@ multi-store operations.
                   The Purple Blend
                 </option>
 
-                <option value="All Time Favorite">
-                  All Time Favorite
-                </option>
+                <option value="Yogu Express">
+  Yogu Express
+</option>
 
-                <option value="Tsai Kaffe">
-                  Tsai Kaffe
-                </option>
+<option value="CFC">
+  CFC
+</option>
 
                 <option value="Crispy Fries">
                   Crispy Fries
