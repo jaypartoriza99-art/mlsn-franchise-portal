@@ -1327,3 +1327,17 @@
 .concept-card button:hover {
   background: #581c87;
 }
+#concepts h2,
+#concepts p {
+  text-align: center;
+}
+#concepts h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+#concepts p {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 50px;
+}
