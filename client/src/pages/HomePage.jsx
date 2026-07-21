@@ -1001,24 +1001,196 @@ multi-store operations.
       </section>
 
       {/* FRANCHISEE PORTAL */}
-      <section className="portal-section">
-        <h2>Already an MLSN Franchisee?</h2>
+      <section className="portal-section upgraded-portal-section">
+  <div className="portal-content">
+    <span className="portal-label">
+      Exclusive Franchisee Access
+    </span>
 
-        <p>
-          Access announcements, marketing
-          materials, and Customer Service
-          support through our Franchisee
-          Portal.
-        </p>
+    <h2>Already an MLSN Franchisee?</h2>
 
-        <button
-          type="button"
-          className="login-button"
-          onClick={onOpenLogin}
-        >
-          Open Franchisee Portal
-        </button>
-      </section>
+    <p className="portal-description">
+      Access important announcements, submit concerns,
+      monitor support tickets, and download approved
+      marketing materials through the MLSN Franchisee Portal.
+    </p>
+
+    <div className="portal-features">
+      <div className="portal-feature">
+        <span>✓</span>
+        <p>Submit and track customer service concerns</p>
+      </div>
+
+      <div className="portal-feature">
+        <span>✓</span>
+        <p>Receive company announcements and updates</p>
+      </div>
+
+      <div className="portal-feature">
+        <span>✓</span>
+        <p>Access approved marketing materials</p>
+      </div>
+
+      <div className="portal-feature">
+        <span>✓</span>
+        <p>Monitor ticket progress and resolutions</p>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      className="portal-login-button"
+      onClick={onOpenLogin}
+    >
+      Open Franchisee Portal
+    </button>
+  </div>
+
+  <div className="portal-preview">
+    <div className="portal-preview-header">
+      <div>
+        <span className="preview-dot"></span>
+        <span className="preview-dot"></span>
+        <span className="preview-dot"></span>
+      </div>
+
+      <span>MLSN Portal</span>
+    </div>
+
+    <div className="portal-preview-body">
+      <div className="preview-sidebar">
+        <div className="preview-logo">MLSN</div>
+        <div className="preview-menu active"></div>
+        <div className="preview-menu"></div>
+        <div className="preview-menu"></div>
+        <div className="preview-menu"></div>
+      </div>
+
+      <div className="preview-dashboard">
+        <h3>Franchisee Dashboard</h3>
+
+        <div className="preview-stats">
+          <div>
+            <strong>3</strong>
+            <span>Open Tickets</span>
+          </div>
+
+          <div>
+            <strong>2</strong>
+            <span>Announcements</span>
+          </div>
+
+          <div>
+            <strong>8</strong>
+            <span>Materials</span>
+          </div>
+        </div>
+
+        <div className="preview-ticket"></div>
+        <div className="preview-ticket short"></div>
+        <div className="preview-ticket"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+      {/* FREQUENTLY ASKED QUESTIONS */}
+<section className="website-section faq-section">
+  <span className="section-label">
+    Helpful Information
+  </span>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <p className="faq-description">
+    Find answers to some of the most common
+    questions about starting a franchise with MLSN.
+  </p>
+
+  <div className="faq-container">
+
+    <details className="faq-item">
+      <summary>
+        How much is the franchise investment?
+      </summary>
+
+      <p>
+        The investment depends on the selected
+        franchise concept and package. Complete
+        the inquiry form to receive the available
+        package details from our team.
+      </p>
+    </details>
+
+    <details className="faq-item">
+      <summary>
+        Does MLSN provide business training?
+      </summary>
+
+      <p>
+        Yes. MLSN provides training and operational
+        guidance to help franchisees understand the
+        proper preparation, product handling, and
+        daily operation of their selected concept.
+      </p>
+    </details>
+
+    <details className="faq-item">
+      <summary>
+        Can I operate my franchise outside Luzon?
+      </summary>
+
+      <p>
+        Yes. MLSN supports franchise opportunities
+        in different locations nationwide, subject
+        to concept availability and territory
+        assessment.
+      </p>
+    </details>
+
+    <details className="faq-item">
+      <summary>
+        What support will I receive after franchising?
+      </summary>
+
+      <p>
+        Franchisees may receive training, marketing
+        guidance, product assistance, customer
+        service support, and access to the MLSN
+        Franchisee Portal.
+      </p>
+    </details>
+
+    <details className="faq-item">
+      <summary>
+        How long does the franchise process take?
+      </summary>
+
+      <p>
+        Processing time may vary depending on the
+        selected package, required documents,
+        training schedule, production, and delivery
+        location. Our team will provide the applicable
+        timeline during the process.
+      </p>
+    </details>
+
+    <details className="faq-item">
+      <summary>
+        How can I submit a franchise inquiry?
+      </summary>
+
+      <p>
+        Complete the franchise inquiry form on this
+        website. After submission, an MLSN
+        representative will contact you regarding
+        the available concepts, packages, and next
+        steps.
+      </p>
+    </details>
+
+  </div>
+</section>
 
       {/* CONTACT */}
       <section
