@@ -294,16 +294,113 @@ function HomePage({ onOpenLogin }) {
   </div>
 
   <div className="why-cta">
-    <h3>
-      Ready to Start Your Business Journey?
-    </h3>
+  <span className="why-cta-label">
+    Start Your Business Journey
+  </span>
 
-    <button
-      onClick={scrollToInquiry}
-      className="inquire-button"
-    >
-      Inquire Now
-    </button>
+  <h3>
+    Ready to Build Your Business with MLSN?
+  </h3>
+
+  <p>
+    Join more than 2,000 franchisees nationwide and
+    discover the franchise opportunity that matches
+    your goals.
+  </p>
+
+  <button
+    onClick={scrollToInquiry}
+    className="why-cta-button"
+  >
+    Inquire Now
+  </button>
+</div>
+
+</section>
+
+<section className="website-section process-section">
+
+  <span className="section-label">
+    Simple Process
+  </span>
+
+  <h2>
+    How To Start Your Franchise Journey
+  </h2>
+
+  <p className="process-description">
+    Starting your business with MLSN is easy.
+    Follow these simple steps and begin your
+    entrepreneurial journey with confidence.
+  </p>
+
+  <div className="process-grid">
+
+    <div className="process-card">
+      <div className="process-number">
+        1
+      </div>
+
+      <h3>Submit Inquiry</h3>
+
+      <p>
+        Send us your preferred concept and
+        location through our inquiry form.
+      </p>
+    </div>
+
+    <div className="process-card">
+      <div className="process-number">
+        2
+      </div>
+
+      <h3>Business Orientation</h3>
+
+      <p>
+        Learn more about MLSN and available
+        franchise opportunities.
+      </p>
+    </div>
+
+    <div className="process-card">
+      <div className="process-number">
+        3
+      </div>
+
+      <h3>Select Your Package</h3>
+
+      <p>
+        Choose the package that best fits
+        your business goals.
+      </p>
+    </div>
+
+    <div className="process-card">
+      <div className="process-number">
+        4
+      </div>
+
+      <h3>Training & Processing</h3>
+
+      <p>
+        Receive training and prepare your
+        business requirements.
+      </p>
+    </div>
+
+    <div className="process-card">
+      <div className="process-number">
+        5
+      </div>
+
+      <h3>Start Operating</h3>
+
+      <p>
+        Launch your franchise with
+        continuous support from MLSN.
+      </p>
+    </div>
+
   </div>
 
 </section>
