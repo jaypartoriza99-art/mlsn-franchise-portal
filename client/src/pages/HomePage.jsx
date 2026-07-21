@@ -3,6 +3,9 @@ import { supabase } from '../lib/supabase'
 import logo from '../assets/logo.png'
 import '../styles/homepage.css'
 import banner from '../assets/banner.jpg'
+import yoguImage from '../assets/yogu.jpg'
+import aboutMlsnImage from '../assets/about-mlsn.png'
+
 
 function HomePage({ onOpenLogin }) {
   const [fullName, setFullName] = useState('')
@@ -173,276 +176,319 @@ function HomePage({ onOpenLogin }) {
 
       {/* ABOUT */}
       <section
-        id="about"
-        className="website-section"
-      >
-        <h2>About MLSN</h2>
+  id="about"
+  className="website-section about-section"
+>
+  <h2>About MLSN Franchising Solution Corporation</h2>
 
-        <p>
-          MLSN Franchising Solution
-          Corporation is committed to helping
-          aspiring entrepreneurs start and grow
-          their businesses through affordable
-          and accessible franchise concepts.
-        </p>
-      </section>
+  <p>
+    Learn more about MLSN Franchising
+    Solution Corporation, our nationwide
+    growth, offices, and commitment to
+    empowering aspiring entrepreneurs.
+  </p>
+
+  <div className="about-image-wrapper">
+    <img
+      src={aboutMlsnImage}
+      alt="About MLSN"
+      className="about-mlsn-image"
+    />
+  </div>
+</section>
 
       {/* WHY CHOOSE MLSN */}
-      <section className="website-section">
-        <h2>Why Choose MLSN?</h2>
+      <section
+  className="website-section why-section"
+>
+  <h2>Why Choose MLSN?</h2>
 
-        <p>
-          We provide practical franchise
-          opportunities supported by training,
-          marketing guidance, product assistance,
-          and dedicated Customer Service.
-        </p>
-
-        <div className="why-grid">
-          <div className="why-card">
-            <h3>Affordable Packages</h3>
-
-            <p>
-              Accessible business opportunities
-              designed for aspiring
-              entrepreneurs.
-            </p>
-          </div>
-
-          <div className="why-card">
-            <h3>Business Training</h3>
-
-            <p>
-              Learn the basic operations and
-              preparation needed for your chosen
-              concept.
-            </p>
-          </div>
-
-          <div className="why-card">
-            <h3>Marketing Support</h3>
-
-            <p>
-              Access approved promotional
-              materials and marketing guidance.
-            </p>
-          </div>
-
-          <div className="why-card">
-  <h3>
-    Business Registration Assistance
-  </h3>
-
-  <p>
-    Guidance in business permits,
-    registrations, and documentary
-    requirements.
+  <p className="why-description">
+    More than a franchise opportunity, MLSN provides
+    complete business support to help aspiring
+    entrepreneurs start, operate, and grow their
+    businesses successfully.
   </p>
-</div>
 
-<div className="why-card">
-  <h3>
-    Franchise Growth Support
-  </h3>
+  {/* Statistics */}
+  <div className="stats-container">
+    <div className="stat-card">
+      <h3>2K+</h3>
+      <span>Franchisees Nationwide</span>
+    </div>
 
-  <p>
-    Continuous assistance to help
-    franchisees grow and expand their
-    business.
-  </p>
-</div>
-          <div className="why-card">
-            <h3>Customer Service Portal</h3>
+    <div className="stat-card">
+      <h3>3</h3>
+      <span>Corporate Offices</span>
+    </div>
 
-            <p>
-              Submit and monitor concerns through
-              our dedicated online support
-              system.
-            </p>
-          </div>
-        </div>
-      </section>
+    <div className="stat-card">
+      <h3>2022</h3>
+      <span>Established</span>
+    </div>
+  </div>
+
+  {/* Cards */}
+  <div className="why-grid">
+
+    <div className="why-card">
+      <h3>Affordable Packages</h3>
+
+      <ul>
+        <li>Accessible investment options</li>
+        <li>Multiple business concepts</li>
+        <li>Designed for aspiring entrepreneurs</li>
+      </ul>
+    </div>
+
+    <div className="why-card">
+      <h3>Business Training</h3>
+
+      <ul>
+        <li>Hands-on training</li>
+        <li>Operations guidance</li>
+        <li>Training manuals and support</li>
+      </ul>
+    </div>
+
+    <div className="why-card">
+      <h3>Marketing Support</h3>
+
+      <ul>
+        <li>Approved promotional materials</li>
+        <li>Marketing guidance</li>
+        <li>Online support assistance</li>
+      </ul>
+    </div>
+
+    <div className="why-card">
+      <h3>Business Registration Assistance</h3>
+
+      <ul>
+        <li>Permit guidance</li>
+        <li>Documentary assistance</li>
+        <li>Business setup support</li>
+      </ul>
+    </div>
+
+    <div className="why-card">
+      <h3>Nationwide Expansion Support</h3>
+
+      <ul>
+        <li>Continuous franchise assistance</li>
+        <li>Business growth guidance</li>
+        <li>Long-term partnership support</li>
+      </ul>
+    </div>
+
+    <div className="why-card">
+      <h3>Dedicated Customer Service</h3>
+
+      <ul>
+        <li>Concern monitoring</li>
+        <li>Fast response support</li>
+        <li>Online customer portal</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div className="why-cta">
+    <h3>
+      Ready to Start Your Business Journey?
+    </h3>
+
+    <button
+      onClick={scrollToInquiry}
+      className="inquire-button"
+    >
+      Inquire Now
+    </button>
+  </div>
+
+</section>
 
       {/* CONCEPTS */}
-      <h2>Find the Perfect Franchise For You</h2>
+<section
+  id="concepts"
+  className="website-section"
+>
+  <h2>Find the Perfect Franchise For You</h2>
 
-<p>
-  From grilled chicken and coffee to frozen yogurt
-  and flavored chicken concepts, discover the
-  business opportunity that matches your goals.
-</p>
+  <p>
+    From grilled chicken and coffee to frozen yogurt
+    and flavored chicken concepts, discover the
+    business opportunity that matches your goals.
+  </p>
 
-        <div className="concept-grid">
+  <div className="concept-grid">
 
-  {/* INASAL EXPRESS */}
-  <div className="concept-card upgraded-concept-card">
-    <div className="concept-image-area">
-      <div className="concept-emoji">🍗</div>
+    {/* INASAL */}
+    <div className="concept-card upgraded-concept-card">
+      <div className="concept-image-area">
+        <div className="concept-emoji">🍗</div>
+      </div>
+
+      <div className="concept-card-content">
+        <span className="concept-category">
+          FOOD CONCEPT
+        </span>
+
+        <h3>Inasal Express</h3>
+
+        <p>
+          Filipino grilled chicken franchise
+          concept designed for affordable and
+          accessible business operations.
+        </p>
+
+        <button
+          type="button"
+          className="concept-inquire-button"
+          onClick={() => {
+            setInterestedConcept('Inasal Express')
+            scrollToInquiry()
+          }}
+        >
+          View Franchise Details
+        </button>
+      </div>
     </div>
 
-    <div className="concept-card-content">
-      <span className="concept-category">
-        FOOD CONCEPT
-      </span>
+    {/* PURPLE BLEND */}
+    <div className="concept-card upgraded-concept-card">
+      <div className="concept-image-area">
+        <div className="concept-emoji">☕</div>
+      </div>
 
-      <h3>Inasal Express</h3>
+      <div className="concept-card-content">
+        <span className="concept-category">
+          BEVERAGE CONCEPT
+        </span>
 
-      <p>
-        Filipino grilled chicken franchise
-        concept designed for affordable and
-        accessible business operations.
-      </p>
+        <h3>The Purple Blend</h3>
 
-      <button
-        type="button"
-        className="concept-inquire-button"
-        onClick={() => {
-          setInterestedConcept(
-            'Inasal Express'
-          )
-          scrollToInquiry()
-        }}
-      >
-        View Franchise Details
-      </button>
-    </div>
-  </div>
+        <p>
+          Coffee and beverage franchise concept
+          offering modern café products and
+          refreshing drinks.
+        </p>
 
-  {/* PURPLE BLEND */}
-  <div className="concept-card upgraded-concept-card">
-    <div className="concept-image-area">
-      <div className="concept-emoji">☕</div>
+        <button
+          type="button"
+          className="concept-inquire-button"
+          onClick={() => {
+            setInterestedConcept('The Purple Blend')
+            scrollToInquiry()
+          }}
+        >
+          View Franchise Details
+        </button>
+      </div>
     </div>
 
-    <div className="concept-card-content">
-      <span className="concept-category">
-        BEVERAGE CONCEPT
-      </span>
+    {/* YOGU */}
+    <div className="concept-card upgraded-concept-card">
+      <div className="concept-image-area">
+        <img
+          src={yoguImage}
+          alt="Yogu Express"
+          className="concept-image"
+        />
+      </div>
 
-      <h3>The Purple Blend</h3>
+      <div className="concept-card-content">
+        <span className="concept-category">
+          DESSERT CONCEPT
+        </span>
 
-      <p>
-        Coffee and beverage franchise concept
-        offering modern café products and
-        refreshing drinks.
-      </p>
+        <h3>Yogu Express</h3>
 
-      <button
-        type="button"
-        className="concept-inquire-button"
-        onClick={() => {
-          setInterestedConcept(
-            'The Purple Blend'
-          )
-          scrollToInquiry()
-        }}
-      >
-        View Franchise Details
-      </button>
-    </div>
-  </div>
+        <p>
+          Korean-inspired frozen yogurt franchise
+          featuring customizable toppings and
+          healthy dessert options.
+        </p>
 
-  {/* YOGU EXPRESS */}
-<div className="concept-card upgraded-concept-card">
-  <div className="concept-image-area">
-    <div className="concept-emoji">🍦</div>
-  </div>
-
-  <div className="concept-card-content">
-    <span className="concept-category">
-      DESSERT CONCEPT
-    </span>
-
-    <h3>Yogu Express</h3>
-
-    <p>
-      Korean-inspired frozen yogurt franchise
-      featuring customizable toppings and
-      healthy dessert options.
-    </p>
-
-    <button
-      type="button"
-      className="concept-inquire-button"
-      onClick={() => {
-        setInterestedConcept(
-          'Yogu Express'
-        )
-        scrollToInquiry()
-      }}
-    >
-      View Franchise Details
-    </button>
-  </div>
-</div>
-
-  {/* CFC */}
-<div className="concept-card upgraded-concept-card">
-  <div className="concept-image-area">
-    <div className="concept-emoji">🍗</div>
-  </div>
-
-  <div className="concept-card-content">
-    <span className="concept-category">
-      FOOD CONCEPT
-    </span>
-
-    <h3>CFC</h3>
-
-    <p>
-      Boneless fried chicken franchise
-      featuring different flavors paired
-      with signature milkshake varieties.
-    </p>
-
-    <button
-      type="button"
-      className="concept-inquire-button"
-      onClick={() => {
-        setInterestedConcept('CFC')
-        scrollToInquiry()
-      }}
-    >
-      View Franchise Details
-    </button>
-  </div>
-</div>
-
-  {/* CRISPY FRIES */}
-  <div className="concept-card upgraded-concept-card">
-    <div className="concept-image-area">
-      <div className="concept-emoji">🍟</div>
+        <button
+          type="button"
+          className="concept-inquire-button"
+          onClick={() => {
+            setInterestedConcept('Yogu Express')
+            scrollToInquiry()
+          }}
+        >
+          View Franchise Details
+        </button>
+      </div>
     </div>
 
-    <div className="concept-card-content">
-      <span className="concept-category">
-        SNACK CONCEPT
-      </span>
+    {/* CFC */}
+    <div className="concept-card upgraded-concept-card">
+      <div className="concept-image-area">
+        <div className="concept-emoji">🍗</div>
+      </div>
 
-      <h3>Crispy Fries</h3>
+      <div className="concept-card-content">
+        <span className="concept-category">
+          FOOD CONCEPT
+        </span>
 
-      <p>
-        Snack business concept offering
-        affordable and high-demand potato
-        products.
-      </p>
+        <h3>CFC</h3>
 
-      <button
-        type="button"
-        className="concept-inquire-button"
-        onClick={() => {
-          setInterestedConcept(
-            'Crispy Fries'
-          )
-          scrollToInquiry()
-        }}
-      >
-        View Franchise Details
-      </button>
+        <p>
+          Boneless fried chicken franchise
+          featuring different flavors paired
+          with signature milkshake varieties.
+        </p>
+
+        <button
+          type="button"
+          className="concept-inquire-button"
+          onClick={() => {
+            setInterestedConcept('CFC')
+            scrollToInquiry()
+          }}
+        >
+          View Franchise Details
+        </button>
+      </div>
     </div>
-  </div>
 
-</div>
+    {/* CRISPY FRIES */}
+    <div className="concept-card upgraded-concept-card">
+      <div className="concept-image-area">
+        <div className="concept-emoji">🍟</div>
+      </div>
+
+      <div className="concept-card-content">
+        <span className="concept-category">
+          SNACK CONCEPT
+        </span>
+
+        <h3>Crispy Fries</h3>
+
+        <p>
+          Snack business concept offering
+          affordable and high-demand potato
+          products.
+        </p>
+
+        <button
+          type="button"
+          className="concept-inquire-button"
+          onClick={() => {
+            setInterestedConcept('Crispy Fries')
+            scrollToInquiry()
+          }}
+        >
+          View Franchise Details
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
 {/* FRANCHISE PACKAGES */}
 <section
   id="packages"

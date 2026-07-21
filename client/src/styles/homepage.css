@@ -1285,7 +1285,7 @@
 .concept-image {
   width: 100%;
   height: 180px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 15px;
   margin-bottom: 15px;
 }
@@ -1340,4 +1340,106 @@
   text-align: center;
   max-width: 700px;
   margin: 0 auto 50px;
+}
+.concept-image-area {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 16px;
+  margin-bottom: 18px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.concept-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  border-radius: 16px;
+  transition: transform 0.3s ease;
+}
+
+.concept-card:hover .concept-image {
+  transform: scale(1.05);
+}
+.about-section {
+  text-align: center;
+}
+
+.about-image-wrapper {
+  width: 100%;
+  max-width: 1500px;
+  margin: 40px auto 0;
+  overflow: hidden;
+  border-radius: 25px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+}
+
+.about-mlsn-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin: 45px 0;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  background: #fff;
+  padding: 25px 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.08);
+  text-align: center;
+  min-width: 220px;
+}
+
+.stat-card h3 {
+  font-size: 3rem;
+  color: #6f2cff;
+  margin-bottom: 10px;
+}
+
+.stat-card span {
+  color: #666;
+  font-weight: 600;
+}
+
+/* Cards */
+
+.why-card {
+  background: white;
+  border-radius: 22px;
+  padding: 35px;
+  transition: all .3s ease;
+}
+
+.why-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 45px rgba(111,44,255,.15);
+}
+
+.why-card ul {
+  margin-top: 20px;
+  padding-left: 18px;
+  color: #666;
+  line-height: 2;
+}
+
+/* CTA */
+
+.why-cta {
+  margin-top: 70px;
+  text-align: center;
+}
+
+.why-cta h3 {
+  font-size: 2rem;
+  margin-bottom: 25px;
 }
