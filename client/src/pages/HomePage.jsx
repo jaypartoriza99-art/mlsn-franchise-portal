@@ -10,6 +10,14 @@ import testimonial2 from '../assets/testimonial-2.jpg'
 import testimonial3 from '../assets/testimonial-3.jpg'
 import testimonial4 from '../assets/testimonial-4.jpg'
 import testimonial5 from '../assets/testimonial-5.jpg'
+import seminar1 from '../assets/seminar1.jpg'
+import seminar2 from '../assets/seminar2.jpg'
+import seminar3 from '../assets/seminar3.jpg'
+import seminar4 from '../assets/seminar4.jpg'
+import inasalImage from '../assets/inasal.jpg'
+import crispyFriesImage from '../assets/crispy-fries.jpg'
+import purpleBlendImage from '../assets/purple-blend.jpg'
+import cfcImage from '../assets/cfc.png'
 
 function HomePage({ onOpenLogin }) {
   const [fullName, setFullName] = useState('')
@@ -335,6 +343,10 @@ function scrollToInquiry() {
   {/* Statistics */}
   <div className="stats-container">
   <div className="stat-card fade-up">
+    <div className="stat-icon">
+      🏪
+    </div>
+
     <h3>
       {franchiseCount >= 2000
         ? '2K+'
@@ -345,12 +357,20 @@ function scrollToInquiry() {
   </div>
 
   <div className="stat-card fade-up animation-delay-1">
+    <div className="stat-icon">
+      🏢
+    </div>
+
     <h3>{officeCount}</h3>
 
     <span>Corporate Offices</span>
   </div>
 
   <div className="stat-card fade-up animation-delay-2">
+    <div className="stat-icon">
+      📅
+    </div>
+
     <h3>{yearCount}</h3>
 
     <span>Established</span>
@@ -537,7 +557,7 @@ function scrollToInquiry() {
       {/* CONCEPTS */}
 <section
   id="concepts"
-  className="website-section"
+  className="website-section concepts-section"
 >
   <h2>Find the Perfect Franchise For You</h2>
 
@@ -552,8 +572,12 @@ function scrollToInquiry() {
     {/* INASAL */}
     <div className="concept-card upgraded-concept-card">
       <div className="concept-image-area">
-        <div className="concept-emoji">🍗</div>
-      </div>
+  <img
+    src={inasalImage}
+    alt="Inasal Express"
+    className="concept-image"
+  />
+</div>
 
       <div className="concept-card-content">
         <span className="concept-category">
@@ -584,8 +608,12 @@ function scrollToInquiry() {
     {/* PURPLE BLEND */}
     <div className="concept-card upgraded-concept-card">
       <div className="concept-image-area">
-        <div className="concept-emoji">☕</div>
-      </div>
+  <img
+    src={purpleBlendImage}
+    alt="Purple Blend"
+    className="concept-image"
+  />
+</div>
 
       <div className="concept-card-content">
         <span className="concept-category">
@@ -652,8 +680,12 @@ function scrollToInquiry() {
     {/* CFC */}
     <div className="concept-card upgraded-concept-card">
       <div className="concept-image-area">
-        <div className="concept-emoji">🍗</div>
-      </div>
+  <img
+    src={cfcImage}
+    alt="CFC"
+    className="concept-image"
+  />
+</div>
 
       <div className="concept-card-content">
         <span className="concept-category">
@@ -681,11 +713,55 @@ function scrollToInquiry() {
       </div>
     </div>
 
+    {/* LECHON NI KUYA KURT */}
+<div className="concept-card upgraded-concept-card">
+
+  <div className="concept-image-area">
+    <div className="concept-emoji">
+      🍗
+    </div>
+  </div>
+
+  <div className="concept-card-content">
+
+    <span className="concept-category">
+      FOOD CONCEPT
+    </span>
+
+    <h3>Lechon ni Kuya Kurt</h3>
+
+    <p>
+      Filipino roasted chicken business
+      concept inspired by the country's
+      well-loved lechon manok industry.
+    </p>
+
+    <button
+      type="button"
+      className="concept-inquire-button"
+      onClick={() => {
+        setInterestedConcept(
+          'Lechon ni Kuya Kurt'
+        )
+        scrollToInquiry()
+      }}
+    >
+      View Franchise Details
+    </button>
+
+  </div>
+
+</div>
+
     {/* CRISPY FRIES */}
     <div className="concept-card upgraded-concept-card">
       <div className="concept-image-area">
-        <div className="concept-emoji">🍟</div>
-      </div>
+  <img
+    src={crispyFriesImage}
+    alt="Crispy Fries"
+    className="concept-image"
+  />
+</div>
 
       <div className="concept-card-content">
         <span className="concept-category">
@@ -854,7 +930,7 @@ multi-store operations.
 </section>
 
       {/* STATISTICS */}
-      <section className="stats-section">
+      <section className="website-section stats-section statistics-section">
         <div className="stat-card">
           <h2>Multiple</h2>
           <p>Franchise Concepts</p>
@@ -1046,6 +1122,10 @@ multi-store operations.
   CFC
 </option>
 
+<option value="Lechon ni Kuya Kurt">
+  Lechon ni Kuya Kurt
+</option>
+
                 <option value="Crispy Fries">
                   Crispy Fries
                 </option>
@@ -1129,7 +1209,130 @@ multi-store operations.
         </form>
       </section>
 
+{/* COMPANY TIMELINE */}
+
+<section className="website-section timeline-section fade-up">
+
+  <span className="section-label">
+    Our Journey
+  </span>
+
+  <h2>MLSN Milestones</h2>
+
+  <p className="timeline-description">
+    From a single office in 2022 to serving
+    thousands of franchisees nationwide.
+  </p>
+
+  <div className="timeline">
+
+    <div className="timeline-item">
+      <div className="timeline-year">
+  <span className="timeline-icon">🏢</span>
+  <span>2022</span>
+</div>
+
+      <div className="timeline-content">
+        <h3>Company Established</h3>
+
+        <p>
+          MLSN Franchising Solution Corporation
+          officially started its operations.
+        </p>
+      </div>
+    </div>
+
+    <div className="timeline-item">
+      <div className="timeline-year">
+  <span className="timeline-icon">🏢</span>
+  <span>2022</span>
+</div>
+
+      <div className="timeline-content">
+        <h3>Iloilo Branch Expansion</h3>
+
+        <p>
+          Opened our Iloilo Branch to better
+          support Visayas franchisees.
+        </p>
+      </div>
+    </div>
+
+    <div className="timeline-item">
+      <div className="timeline-year">
+  <span className="timeline-icon">🏢</span>
+  <span>2022</span>
+</div>
+
+      <div className="timeline-content">
+        <h3>Bicol Branch Expansion</h3>
+
+        <p>
+          Expanded operations to Bicol Region
+          for wider nationwide coverage.
+        </p>
+      </div>
+    </div>
+
+    <div className="timeline-item">
+      <div className="timeline-year">
+  <span className="timeline-icon">🏢</span>
+  <span>2022</span>
+</div>
+
+      <div className="timeline-content">
+        <h3>2,000+ Franchisees Nationwide</h3>
+
+        <p>
+          Continuously growing and supporting
+          entrepreneurs across the Philippines.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<section className="website-section seminar-section fade-up">
+
+  <span className="section-label">
+    Real Business Events
+  </span>
+
+  <h2>Seminars & Business Orientations</h2>
+
+  <p className="seminar-description">
+    MLSN continuously conducts business
+    orientation seminars and franchise
+    trainings nationwide to help aspiring
+    entrepreneurs start their journey.
+  </p>
+
+  <div className="seminar-gallery">
+
+    <div className="seminar-card">
+      <img src={seminar1} alt="MLSN Seminar" />
+    </div>
+
+    <div className="seminar-card">
+      <img src={seminar2} alt="MLSN Seminar" />
+    </div>
+
+    <div className="seminar-card">
+      <img src={seminar3} alt="MLSN Seminar" />
+    </div>
+
+    <div className="seminar-card">
+      <img src={seminar4} alt="MLSN Seminar" />
+    </div>
+
+  </div>
+
+</section>
+
       {/* FRANCHISEE PORTAL */}
+    
       <section className="portal-section upgraded-portal-section">
   <div className="portal-content">
     <span className="portal-label">
@@ -1375,8 +1578,39 @@ multi-store operations.
   </div>
 </section>
 
+{/* FINAL CALL TO ACTION */}
+
+<section className="final-cta-section fade-up">
+  <div className="final-cta-content">
+    <span className="final-cta-label">
+      Start Your Business Today
+    </span>
+
+    <h2>
+      Ready to Begin Your Franchise Journey?
+    </h2>
+
+    <p>
+      Join more than 2,000 MLSN franchisees
+      nationwide and take the next step toward
+      building your own business.
+    </p>
+
+    <button
+      type="button"
+      className="final-cta-button"
+      onClick={scrollToInquiry}
+    >
+      Inquire Now
+    </button>
+  </div>
+</section>
+
       {/* CONTACT */}
-      <section className="contact-section fade-up">
+        <section
+  id="contact"
+  className="website-section contact-section fade-up"
+>
 
   <span className="section-label">
     Get In Touch
