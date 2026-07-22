@@ -1,11 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import logo from '../assets/logo.png'
 import '../styles/homepage.css'
 import banner from '../assets/banner.jpg'
 import yoguImage from '../assets/yogu.jpg'
 import aboutMlsnImage from '../assets/about-mlsn.png'
-
+import testimonial1 from '../assets/testimonial-1.jpg'
+import testimonial2 from '../assets/testimonial-2.jpg'
+import testimonial3 from '../assets/testimonial-3.jpg'
+import testimonial4 from '../assets/testimonial-4.jpg'
+import testimonial5 from '../assets/testimonial-5.jpg'
 
 function HomePage({ onOpenLogin }) {
   const [fullName, setFullName] = useState('')
@@ -22,10 +26,128 @@ function HomePage({ onOpenLogin }) {
   const [errorMessage, setErrorMessage] =
     useState('')
   const [isSubmitting, setIsSubmitting] =
-    useState(false)
+  useState(false)
+  const [franchiseCount, setFranchiseCount] =
+  useState(0)
 
+const [officeCount, setOfficeCount] =
+  useState(0)
 
-  function scrollToInquiry() {
+const [yearCount, setYearCount] =
+  useState(0)
+
+useEffect(() => {
+  const fadeElements =
+    document.querySelectorAll('.fade-up')
+
+  const fadeObserver =
+    new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+  entry.target.classList.add('show')
+} else {
+  entry.target.classList.remove('show')
+}
+        })
+      },
+      {
+        threshold: 0.15,
+      }
+    )
+
+  fadeElements.forEach((element) =>
+    fadeObserver.observe(element)
+  )
+
+  const statsSection =
+    document.querySelector('.stats-container')
+
+  let counterStarted = false
+  let counterTimer
+
+  const counterObserver =
+  new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          let currentStep = 0
+
+          const duration = 1500
+          const interval = 20
+          const steps =
+            duration / interval
+
+          const counterTimer =
+            setInterval(() => {
+              currentStep += 1
+
+              const progress =
+                currentStep / steps
+
+              setFranchiseCount(
+                Math.min(
+                  Math.floor(
+                    2000 * progress
+                  ),
+                  2000
+                )
+              )
+
+              setOfficeCount(
+                Math.min(
+                  Math.floor(
+                    3 * progress
+                  ),
+                  3
+                )
+              )
+
+              setYearCount(
+                Math.min(
+                  Math.floor(
+                    2020 +
+                      2 * progress
+                  ),
+                  2022
+                )
+              )
+
+              if (
+                currentStep >= steps
+              ) {
+                clearInterval(
+                  counterTimer
+                )
+              }
+            }, interval)
+        } else {
+          setFranchiseCount(0)
+          setOfficeCount(0)
+          setYearCount(2020)
+        }
+      })
+    },
+    {
+      threshold: 0.4,
+    }
+  )
+
+  if (statsSection) {
+    counterObserver.observe(statsSection)
+  }
+
+  return () => {
+    fadeObserver.disconnect()
+    counterObserver.disconnect()
+
+    if (counterTimer) {
+      clearInterval(counterTimer)
+    }
+  }
+}, [])
+
+function scrollToInquiry() {
     document
       .getElementById('inquiry')
       ?.scrollIntoView({
@@ -177,7 +299,7 @@ function HomePage({ onOpenLogin }) {
       {/* ABOUT */}
       <section
   id="about"
-  className="website-section about-section"
+  className="website-section about-section fade-up"
 >
   <h2>About MLSN Franchising Solution Corporation</h2>
 
@@ -199,7 +321,7 @@ function HomePage({ onOpenLogin }) {
 
       {/* WHY CHOOSE MLSN */}
       <section
-  className="website-section why-section"
+  className="website-section why-section fade-up"
 >
   <h2>Why Choose MLSN?</h2>
 
@@ -212,26 +334,33 @@ function HomePage({ onOpenLogin }) {
 
   {/* Statistics */}
   <div className="stats-container">
-    <div className="stat-card">
-      <h3>2K+</h3>
-      <span>Franchisees Nationwide</span>
-    </div>
+  <div className="stat-card fade-up">
+    <h3>
+      {franchiseCount >= 2000
+        ? '2K+'
+        : franchiseCount}
+    </h3>
 
-    <div className="stat-card">
-      <h3>3</h3>
-      <span>Corporate Offices</span>
-    </div>
-
-    <div className="stat-card">
-      <h3>2022</h3>
-      <span>Established</span>
-    </div>
+    <span>Franchisees Nationwide</span>
   </div>
+
+  <div className="stat-card fade-up animation-delay-1">
+    <h3>{officeCount}</h3>
+
+    <span>Corporate Offices</span>
+  </div>
+
+  <div className="stat-card fade-up animation-delay-2">
+    <h3>{yearCount}</h3>
+
+    <span>Established</span>
+  </div>
+</div>
 
   {/* Cards */}
   <div className="why-grid">
 
-    <div className="why-card">
+    <div className="why-card fade-up">
       <h3>Affordable Packages</h3>
 
       <ul>
@@ -241,7 +370,7 @@ function HomePage({ onOpenLogin }) {
       </ul>
     </div>
 
-    <div className="why-card">
+    <div className="why-card fade-up animation-delay-1">
       <h3>Business Training</h3>
 
       <ul>
@@ -251,7 +380,7 @@ function HomePage({ onOpenLogin }) {
       </ul>
     </div>
 
-    <div className="why-card">
+    <div className="why-card fade-up animation-delay-2">
       <h3>Marketing Support</h3>
 
       <ul>
@@ -261,7 +390,7 @@ function HomePage({ onOpenLogin }) {
       </ul>
     </div>
 
-    <div className="why-card">
+    <div className="why-card fade-up animation-delay-3">
       <h3>Business Registration Assistance</h3>
 
       <ul>
@@ -271,7 +400,7 @@ function HomePage({ onOpenLogin }) {
       </ul>
     </div>
 
-    <div className="why-card">
+    <div className="why-card fade-up animation-delay-1">
       <h3>Nationwide Expansion Support</h3>
 
       <ul>
@@ -281,7 +410,7 @@ function HomePage({ onOpenLogin }) {
       </ul>
     </div>
 
-    <div className="why-card">
+    <div className="why-card fade-up animation-delay-2">
       <h3>Dedicated Customer Service</h3>
 
       <ul>
@@ -1095,7 +1224,7 @@ multi-store operations.
 </section>
 
       {/* FREQUENTLY ASKED QUESTIONS */}
-<section className="website-section faq-section">
+<section className="website-section faq-section fade-up">
   <span className="section-label">
     Helpful Information
   </span>
@@ -1192,30 +1321,160 @@ multi-store operations.
   </div>
 </section>
 
+{/* TESTIMONIALS */}
+<section
+  id="testimonials"
+  className="website-section testimonials-section fade-up"
+>
+  <span className="section-label">
+    Franchisee Experiences
+  </span>
+
+  <h2>What Our Franchisees Say</h2>
+
+  <p className="testimonials-description">
+    See real feedback and experiences shared by our
+    MLSN franchise partners.
+  </p>
+
+  <div className="testimonials-gallery">
+    <div className="testimonial-image-card">
+      <img
+        src={testimonial1}
+        alt="Feedback from an MLSN franchisee"
+      />
+    </div>
+
+    <div className="testimonial-image-card">
+      <img
+        src={testimonial2}
+        alt="Feedback from an MLSN franchisee"
+      />
+    </div>
+
+    <div className="testimonial-image-card">
+      <img
+        src={testimonial3}
+        alt="Feedback from an MLSN franchisee"
+      />
+    </div>
+
+    <div className="testimonial-image-card">
+      <img
+        src={testimonial4}
+        alt="Feedback from an MLSN franchisee"
+      />
+    </div>
+
+    <div className="testimonial-image-card">
+      <img
+        src={testimonial5}
+        alt="Feedback from an MLSN franchisee"
+      />
+    </div>
+  </div>
+</section>
+
       {/* CONTACT */}
-      <section
-        id="contact"
-        className="website-section"
-      >
-        <h2>Contact Us</h2>
+      <section className="contact-section fade-up">
 
-        <p>
-          MLSN Franchising Solution
-          Corporation
-        </p>
+  <span className="section-label">
+    Get In Touch
+  </span>
 
-        <p>Pasay City, Philippines</p>
+  <h2>Contact Us</h2>
 
-        <p>
-          Customer Service: 0916-306-7610
-        </p>
-      </section>
+  <p className="contact-description">
+    Our team is ready to assist you with your
+    franchise inquiries and business opportunities.
+  </p>
+
+  <div className="contact-grid">
+
+    <div className="contact-card">
+      <div className="contact-icon">
+        📍
+      </div>
+
+      <h3>Main Office</h3>
+
+      <p>
+        Pasay City,
+        Philippines
+      </p>
+    </div>
+
+    <div className="contact-card">
+      <div className="contact-icon">
+        📞
+      </div>
+
+      <h3>Customer Service</h3>
+
+      <p>
+        0916-306-7610
+      </p>
+    </div>
+
+    <div className="contact-card">
+      <div className="contact-icon">
+        🕒
+      </div>
+
+      <h3>Office Hours</h3>
+
+      <p>
+        Monday - Saturday
+        <br />
+        8:00 AM - 5:00 PM
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+{/* FLOATING CONTACT BUTTONS */}
+
+<div className="floating-contact-buttons">
+  <a
+  href="#inquiry"
+  className="floating-contact-button messenger-floating-button"
+>
+  <div className="floating-text">
+    <span>🚀 Start Franchising</span>
+    <small>Our Team Will Assist You</small>
+  </div>
+</a>
+
+</div>
 
       {/* FOOTER */}
-      <footer className="website-footer">
-        © 2026 MLSN Franchising Solution
-        Corporation
-      </footer>
+      <footer className="website-footer fade-up">
+
+  <h3>
+    MLSN Franchising Solution Corporation
+  </h3>
+
+  <p className="footer-description">
+    Helping aspiring entrepreneurs build successful businesses nationwide.
+  </p>
+
+  <div className="footer-links">
+    <a href="#about">About</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#packages">Packages</a>
+    <a href="#contact">Contact</a>
+      <a href="#testimonials">Testimonials</a>
+  </div>
+
+  <small>
+    © 2026 MLSN Franchising Solution Corporation
+    <br />
+    All Rights Reserved.
+  </small>
+
+</footer>
     </div>
   )
 }
