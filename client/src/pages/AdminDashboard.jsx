@@ -4,6 +4,109 @@ import AdminTicketDetails from './AdminTicketDetails'
 import UserManagement from './UserManagement'
 import AdminAnnouncements from './AdminAnnouncements'
 import InquiryManagement from './InquiryManagement'
+import SupervisorSurveyDashboard
+  from './SupervisorSurveyDashboard'
+import ExecutiveReports from './ExecutiveReports'
+import DashboardHero from '../components/dashboard/DashboardHero'
+import ExecutiveKpiGrid from '../components/dashboard/ExecutiveKpiGrid'
+import DashboardFocusActions from '../components/dashboard/DashboardFocusActions'
+import AdminDashboardToolbar from '../components/dashboard/AdminDashboardToolbar'
+import TicketStatusCards from '../components/dashboard/TicketStatusCards'
+import ExecutiveAnalyticsSection from '../components/dashboard/ExecutiveAnalyticsSection'
+import ExecutiveOperationsSection from '../components/dashboard/ExecutiveOperationsSection'
+import {
+  buildTicketAnalytics,
+  fetchDashboardAnalytics,
+} from '../services/dashboard/DashboardAnalytics'
+
+const SLA_HOURS = {
+  Urgent: 4,
+  High: 24,
+  Medium: 48,
+  Low: 72,
+}
+
+function formatDuration(milliseconds) {
+  const totalMinutes = Math.max(
+    0,
+    Math.floor(
+      Math.abs(milliseconds) / 60000
+    )
+  )
+
+  const days = Math.floor(
+    totalMinutes / 1440
+  )
+  const hours = Math.floor(
+    (totalMinutes % 1440) / 60
+  )
+  const minutes =
+    totalMinutes % 60
+
+  const parts = []
+
+  if (days > 0) {
+    parts.push(`${days}d`)
+  }
+
+  if (hours > 0) {
+    parts.push(`${hours}h`)
+  }
+
+  if (
+    minutes > 0 ||
+    parts.length === 0
+  ) {
+    parts.push(`${minutes}m`)
+  }
+
+  return parts.join(' ')
+}
+
+function getSlaDisplay(ticket, now) {
+  if (
+    !ticket.priority_locked ||
+    !ticket.sla_due_at
+  ) {
+    return {
+      label: 'SLA not started',
+      className: 'sla-badge sla-pending',
+    }
+  }
+
+  if (
+    ticket.status === 'Resolved' ||
+    ticket.status === 'Closed'
+  ) {
+    return {
+      label: 'SLA completed',
+      className: 'sla-badge sla-completed',
+    }
+  }
+
+  const dueAt = new Date(
+    ticket.sla_due_at
+  )
+  const difference =
+    dueAt.getTime() -
+    now.getTime()
+
+  if (difference >= 0) {
+    return {
+      label:
+        `⏰ Due in: ` +
+        formatDuration(difference),
+      className: 'sla-badge sla-active',
+    }
+  }
+
+  return {
+    label:
+      `⚠ Overdue by: ` +
+      formatDuration(difference),
+    className: 'sla-badge sla-overdue',
+  }
+}
 
 function AdminDashboard({ onLogout }) {
   const [tickets, setTickets] = useState([])
@@ -25,6 +128,16 @@ function AdminDashboard({ onLogout }) {
     setShowInquiryManagement,
   ] = useState(false)
 
+  const [
+    showSurveyDashboard,
+    setShowSurveyDashboard,
+  ] = useState(false)
+
+  const [
+    showExecutiveReports,
+    setShowExecutiveReports,
+  ] = useState(false)
+
   const [searchTerm, setSearchTerm] =
     useState('')
 
@@ -39,7 +152,10 @@ function AdminDashboard({ onLogout }) {
 
 
   const [dateFilter, setDateFilter] =
-  useState('')
+    useState('')
+
+  const [slaFilter, setSlaFilter] =
+    useState('All')
 
   const [
     showMyTickets,
@@ -71,6 +187,25 @@ function AdminDashboard({ onLogout }) {
 
   const [errorMessage, setErrorMessage] =
     useState('')
+
+  const [currentTime, setCurrentTime] =
+    useState(new Date())
+
+  const [currentUserName, setCurrentUserName] =
+    useState('')
+
+  const [dashboardMetrics, setDashboardMetrics] =
+    useState({
+      franchisees: 0,
+      concepts: 0,
+      packageTypes: 0,
+      newFranchiseesThisMonth: 0,
+      packageDistribution: [],
+      conceptDistribution: [],
+      regionDistribution: [],
+      monthlyGrowth: [],
+      recentFranchisees: [],
+    })
 
   useEffect(() => {
     let ticketsChannel
@@ -111,7 +246,7 @@ function AdminDashboard({ onLogout }) {
         error: profileError,
       } = await supabase
         .from('profiles')
-        .select('role')
+        .select('role, full_name, email')
         .eq('id', user.id)
         .single()
 
@@ -128,10 +263,17 @@ function AdminDashboard({ onLogout }) {
         setCurrentUserRole(
           profileData?.role || ''
         )
+
+        setCurrentUserName(
+          profileData?.full_name ||
+            profileData?.email?.split('@')[0] ||
+            'Team Member'
+        )
       }
 
       await fetchAllTickets()
       await fetchNotifications(user.id)
+      await loadDashboardAnalytics()
 
       if (isCancelled) {
         return
@@ -338,6 +480,16 @@ function AdminDashboard({ onLogout }) {
     )
   }
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 60000)
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [])
+
   async function fetchAllTickets() {
     const { data, error } =
       await supabase
@@ -363,6 +515,24 @@ function AdminDashboard({ onLogout }) {
       )
 
     setTickets(ticketsWithAgents)
+  }
+
+  async function loadDashboardAnalytics() {
+    try {
+      const analytics =
+        await fetchDashboardAnalytics()
+
+      setDashboardMetrics(analytics)
+    } catch (error) {
+      console.error(
+        'Unable to load dashboard analytics:',
+        error
+      )
+
+      setErrorMessage(
+        'Some dashboard analytics could not be loaded.'
+      )
+    }
   }
 
   async function fetchNotifications(
@@ -401,6 +571,158 @@ function AdminDashboard({ onLogout }) {
     setUnreadNotifications(
       unreadCount
     )
+  }
+
+
+  async function handlePriorityChange(
+    ticketId,
+    newPriority
+  ) {
+    setErrorMessage('')
+
+    const selectedTicket =
+      tickets.find(
+        (ticket) =>
+          ticket.id === ticketId
+      )
+
+    const normalizedRole =
+      currentUserRole
+        ?.trim()
+        .toLowerCase()
+
+    if (
+      normalizedRole !==
+        'customer_service' ||
+      selectedTicket?.assigned_to !==
+        currentUserId
+    ) {
+      setErrorMessage(
+        'Only the assigned Customer Service representative can set this ticket priority.'
+      )
+      return
+    }
+
+    if (
+      selectedTicket
+        ?.priority_locked === true
+    ) {
+      setErrorMessage(
+        'This ticket priority has already been set and locked.'
+      )
+      return
+    }
+
+    const nowDate = new Date()
+    const now = nowDate.toISOString()
+    const slaHours =
+      SLA_HOURS[newPriority] || 72
+    const slaDueAt = new Date(
+      nowDate.getTime() +
+        slaHours * 60 * 60 * 1000
+    ).toISOString()
+
+    const {
+      data,
+      error,
+    } = await supabase
+      .from('tickets')
+      .update({
+        priority: newPriority,
+        priority_locked: true,
+        priority_set_by:
+          currentUserId,
+        priority_set_at: now,
+        sla_due_at: slaDueAt,
+        status: 'In Progress',
+        updated_at: now,
+      })
+      .eq('id', ticketId)
+      .eq(
+        'assigned_to',
+        currentUserId
+      )
+      .eq(
+        'priority_locked',
+        false
+      )
+      .select(
+        'id, priority, priority_locked, priority_set_by, priority_set_at, sla_due_at, status, updated_at, user_id, ticket_number'
+      )
+      .maybeSingle()
+
+    if (error) {
+      console.error(
+        'Error updating ticket priority:',
+        error
+      )
+
+      setErrorMessage(
+        'Unable to set the ticket priority.'
+      )
+      return
+    }
+
+    if (!data) {
+      setErrorMessage(
+        'The priority could not be changed. The ticket may be unassigned, assigned to another representative, or already locked.'
+      )
+
+      await fetchAllTickets()
+      return
+    }
+
+    setTickets((currentTickets) =>
+      currentTickets.map((ticket) =>
+        ticket.id === ticketId
+          ? {
+              ...ticket,
+              priority:
+                data.priority,
+              priority_locked:
+                data.priority_locked,
+              priority_set_by:
+                data.priority_set_by,
+              priority_set_at:
+                data.priority_set_at,
+              sla_due_at:
+                data.sla_due_at,
+              status:
+                data.status,
+              updated_at:
+                data.updated_at,
+            }
+          : ticket
+      )
+    )
+
+    if (data.user_id) {
+      const {
+        error: notificationError,
+      } = await supabase
+        .from('notifications')
+        .insert([
+          {
+            user_id: data.user_id,
+            ticket_id: ticketId,
+            title:
+              'Ticket Is Now Being Handled',
+            message:
+              `Your ticket ${data.ticket_number} ` +
+              `has been assigned a ${newPriority} priority and is now In Progress.`,
+            notification_type:
+              'priority_set',
+            is_read: false,
+          },
+        ])
+
+      if (notificationError) {
+        console.error(
+          'Error creating priority notification:',
+          notificationError
+        )
+      }
+    }
   }
 
   async function handleOpenNotifications() {
@@ -525,6 +847,7 @@ function AdminDashboard({ onLogout }) {
     setShowNotifications(false)
   }
 
+
   function getPriorityClass(
     priority
   ) {
@@ -585,6 +908,38 @@ function AdminDashboard({ onLogout }) {
     )
   }
 
+  if (showSurveyDashboard) {
+  return (
+    <>
+      <button
+        className="back-button"
+        onClick={() =>
+          setShowSurveyDashboard(
+            false
+          )
+        }
+        style={{
+          marginBottom: '20px',
+        }}
+      >
+        ← Back
+      </button>
+
+      <SupervisorSurveyDashboard />
+    </>
+  )
+}
+
+  if (showExecutiveReports) {
+    return (
+      <ExecutiveReports
+        tickets={tickets}
+        dashboardMetrics={dashboardMetrics}
+        onBack={() => setShowExecutiveReports(false)}
+      />
+    )
+  }
+
   if (selectedTicket) {
     return (
       <AdminTicketDetails
@@ -603,6 +958,72 @@ function AdminDashboard({ onLogout }) {
           }
         }}
       />
+    )
+  }
+
+  function isOpenTicket(ticket) {
+    return (
+      ticket.status !== 'Resolved' &&
+      ticket.status !== 'Closed'
+    )
+  }
+
+  function isOverdueTicket(ticket) {
+    if (
+      !isOpenTicket(ticket) ||
+      !ticket.priority_locked ||
+      !ticket.sla_due_at
+    ) {
+      return false
+    }
+
+    const dueAt = new Date(
+      ticket.sla_due_at
+    )
+
+    return (
+      !Number.isNaN(dueAt.getTime()) &&
+      dueAt.getTime() <
+        currentTime.getTime()
+    )
+  }
+
+  function isNearSlaTicket(ticket) {
+    if (
+      !isOpenTicket(ticket) ||
+      !ticket.priority_locked ||
+      !ticket.sla_due_at ||
+      isOverdueTicket(ticket)
+    ) {
+      return false
+    }
+
+    const dueAt = new Date(
+      ticket.sla_due_at
+    )
+
+    if (Number.isNaN(dueAt.getTime())) {
+      return false
+    }
+
+    const remainingMilliseconds =
+      dueAt.getTime() -
+      currentTime.getTime()
+
+    const totalSlaHours =
+      SLA_HOURS[ticket.priority] || 72
+
+    const nearSlaThreshold =
+      totalSlaHours *
+      0.25 *
+      60 *
+      60 *
+      1000
+
+    return (
+      remainingMilliseconds > 0 &&
+      remainingMilliseconds <=
+        nearSlaThreshold
     )
   }
 
@@ -716,12 +1137,24 @@ const matchesAssignment =
   ticket.assigned_to ===
     currentUserId
 
+const matchesSla =
+  slaFilter === 'All' ||
+  (
+    slaFilter === 'Near SLA' &&
+    isNearSlaTicket(ticket)
+  ) ||
+  (
+    slaFilter === 'Overdue' &&
+    isOverdueTicket(ticket)
+  )
+
 return (
   matchesSearch &&
   matchesStatus &&
   matchesPriority &&
   matchesDate &&
-  matchesAssignment
+  matchesAssignment &&
+  matchesSla
 )
 })
 
@@ -763,6 +1196,16 @@ return (
         ticket.status !== 'Closed'
     ).length
 
+  const nearSlaCount =
+    tickets.filter(
+      isNearSlaTicket
+    ).length
+
+  const overdueCount =
+    tickets.filter(
+      isOverdueTicket
+    ).length
+
   const myTicketsCount =
     tickets.filter(
       (ticket) =>
@@ -771,31 +1214,59 @@ return (
     ).length
 
   const canManageUsers =
-    currentUserRole === 'admin' ||
-    currentUserRole ===
-      'supervisor' ||
-    currentUserRole ===
-      'customer_service'
+    currentUserRole === 'supervisor' ||
+    currentUserRole === 'customer_service'
+
+  const normalizedUserRole =
+    currentUserRole
+      ?.trim()
+      .toLowerCase()
+
+  const isCustomerService =
+    normalizedUserRole ===
+    'customer_service'
 
   const canManageAnnouncements =
-    currentUserRole === 'admin' ||
-    currentUserRole ===
-      'supervisor' ||
-    currentUserRole ===
-      'customer_service'
+    currentUserRole === 'supervisor' ||
+    currentUserRole === 'customer_service'
+
+  const openTicketCount = tickets.filter(
+    isOpenTicket
+  ).length
+
+  const hour = currentTime.getHours()
+  const greeting =
+    hour < 12
+      ? 'Good Morning'
+      : hour < 18
+        ? 'Good Afternoon'
+        : 'Good Evening'
+
+  const dashboardDate =
+    currentTime.toLocaleDateString(
+      'en-PH',
+      {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }
+    )
+
+  const ticketAnalytics =
+    buildTicketAnalytics(
+      tickets,
+      currentTime
+    )
 
   return (
     <>
-      <div className="page-header">
-        <h1>
-          Customer Service Dashboard
-        </h1>
-
-        <p>
-          Manage and respond to
-          franchisee concerns.
-        </p>
-      </div>
+      <DashboardHero
+        greeting={greeting}
+        currentUserName={currentUserName}
+        normalizedUserRole={normalizedUserRole}
+        dashboardDate={dashboardDate}
+      />
 
       {errorMessage && (
         <div className="error-message">
@@ -803,90 +1274,133 @@ return (
         </div>
       )}
 
-      <div className="admin-dashboard-actions">
-        <div className="admin-action-group">
+      <ExecutiveKpiGrid
+        dashboardMetrics={dashboardMetrics}
+        openTicketCount={openTicketCount}
+        overdueCount={overdueCount}
+        nearSlaCount={nearSlaCount}
+      />
+
+      {normalizedUserRole === 'supervisor' && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            margin: '14px 0',
+          }}
+        >
           <button
             type="button"
-            className="notification-button"
-            onClick={
-              handleOpenNotifications
-            }
+            onClick={() => {
+              setShowNotifications(false)
+              setShowExecutiveReports(true)
+            }}
+            style={{
+              border: 'none',
+              borderRadius: '12px',
+              padding: '12px 18px',
+              background:
+                'linear-gradient(135deg, #6f35b5, #4d2384)',
+              color: '#ffffff',
+              fontWeight: 800,
+              cursor: 'pointer',
+            }}
           >
-            🔔 Notifications
-
-            {unreadNotifications >
-              0 && (
-              <span className="notification-count">
-                {
-                  unreadNotifications
-                }
-              </span>
-            )}
+            📄 Executive Reports
           </button>
-
-          {canManageUsers && (
-            <button
-              type="button"
-              className="user-management-button"
-              onClick={() => {
-                setShowNotifications(
-                  false
-                )
-
-                setShowUserManagement(
-                  true
-                )
-              }}
-            >
-              👥 User Management
-            </button>
-          )}
-
-          {canManageAnnouncements && (
-            <button
-              type="button"
-              className="user-management-button"
-              onClick={() => {
-                setShowNotifications(
-                  false
-                )
-
-                setShowAnnouncementManagement(
-                  true
-                )
-              }}
-            >
-              📢 Announcements
-            </button>
-          )}
-
-          {canManageAnnouncements && (
-            <button
-              type="button"
-              className="user-management-button"
-              onClick={() => {
-                setShowNotifications(
-                  false
-                )
-
-                setShowInquiryManagement(
-                  true
-                )
-              }}
-            >
-              📋 Franchise Inquiries
-            </button>
-          )}
         </div>
+      )}
 
-        <button
-          type="button"
-          className="back-button"
-          onClick={onLogout}
-        >
-          Logout
-        </button>
-      </div>
+      <ExecutiveAnalyticsSection
+        ticketStatus={
+          ticketAnalytics.statusDistribution
+        }
+        packageDistribution={
+          dashboardMetrics.packageDistribution || []
+        }
+        monthlyGrowth={
+          dashboardMetrics.monthlyGrowth || []
+        }
+        regionDistribution={
+          dashboardMetrics.regionDistribution || []
+        }
+      />
+
+      <ExecutiveOperationsSection
+        tickets={tickets}
+        dashboardMetrics={dashboardMetrics}
+        ticketAnalytics={ticketAnalytics}
+        nearSlaCount={nearSlaCount}
+        overdueCount={overdueCount}
+      />
+
+      <DashboardFocusActions
+        overdueCount={overdueCount}
+        nearSlaCount={nearSlaCount}
+        submittedCount={submittedCount}
+        canManageUsers={canManageUsers}
+        canManageAnnouncements={canManageAnnouncements}
+        isSupervisor={normalizedUserRole === 'supervisor'}
+        onShowOverdue={() => {
+          setSlaFilter('Overdue')
+          setStatusFilter('All')
+          setPriorityFilter('All')
+          setShowMyTickets(false)
+        }}
+        onShowNearSla={() => {
+          setSlaFilter('Near SLA')
+          setStatusFilter('All')
+          setPriorityFilter('All')
+          setShowMyTickets(false)
+        }}
+        onShowSubmitted={() => {
+          setStatusFilter('Submitted')
+          setPriorityFilter('All')
+          setSlaFilter('All')
+          setShowMyTickets(false)
+        }}
+        onOpenUserManagement={() => {
+          setShowNotifications(false)
+          setShowUserManagement(true)
+        }}
+        onOpenAnnouncements={() => {
+          setShowNotifications(false)
+          setShowAnnouncementManagement(true)
+        }}
+        onOpenInquiries={() => {
+          setShowNotifications(false)
+          setShowInquiryManagement(true)
+        }}
+        onOpenSurveyAnalytics={() => {
+          setShowNotifications(false)
+          setShowSurveyDashboard(true)
+        }}
+      />
+
+      <AdminDashboardToolbar
+        unreadNotifications={unreadNotifications}
+        canManageUsers={canManageUsers}
+        canManageAnnouncements={canManageAnnouncements}
+        isSupervisor={normalizedUserRole === 'supervisor'}
+        onOpenNotifications={handleOpenNotifications}
+        onOpenUserManagement={() => {
+          setShowNotifications(false)
+          setShowUserManagement(true)
+        }}
+        onOpenAnnouncements={() => {
+          setShowNotifications(false)
+          setShowAnnouncementManagement(true)
+        }}
+        onOpenInquiries={() => {
+          setShowNotifications(false)
+          setShowInquiryManagement(true)
+        }}
+        onOpenSurveyAnalytics={() => {
+          setShowNotifications(false)
+          setShowSurveyDashboard(true)
+        }}
+        onLogout={onLogout}
+      />
 
       {showNotifications && (
         <div className="admin-notifications-panel">
@@ -971,91 +1485,102 @@ return (
         </div>
       )}
 
-      <div className="stats modern-stats">
-        <div className="stat-card modern-card">
-          <span className="stat-icon">
-            🟡
-          </span>
+      <TicketStatusCards
+        counts={{
+          submitted: submittedCount,
+          inProgress: inProgressCount,
+          waiting: waitingCount,
+          resolved: resolvedCount,
+          urgent: urgentCount,
+          nearSla: nearSlaCount,
+          overdue: overdueCount,
+          myTickets: myTicketsCount,
+        }}
+        onSelect={(cardKey) => {
+          setStatusFilter('All')
+          setPriorityFilter('All')
+          setSlaFilter('All')
+          setShowMyTickets(false)
 
-          <h3>Submitted</h3>
-          <p>{submittedCount}</p>
-        </div>
-
-        <div className="stat-card modern-card">
-          <span className="stat-icon">
-            🔵
-          </span>
-
-          <h3>In Progress</h3>
-          <p>{inProgressCount}</p>
-        </div>
-
-        <div className="stat-card modern-card">
-          <span className="stat-icon">
-            🟣
-          </span>
-
-          <h3>Waiting</h3>
-          <p>{waitingCount}</p>
-        </div>
-
-        <div className="stat-card modern-card">
-          <span className="stat-icon">
-            🟢
-          </span>
-
-          <h3>Resolved</h3>
-          <p>{resolvedCount}</p>
-        </div>
-
-        <div className="stat-card modern-card">
-          <span className="stat-icon">
-            🚨
-          </span>
-
-          <h3>Urgent Open</h3>
-          <p>{urgentCount}</p>
-        </div>
-
-        <div className="stat-card modern-card">
-          <span className="stat-icon">
-            👤
-          </span>
-
-          <h3>Assigned to Me</h3>
-          <p>{myTicketsCount}</p>
-        </div>
-      </div>
-
-      <div className="my-tickets-toggle">
-        <button
-          type="button"
-          className={
-            showMyTickets
-              ? 'active'
-              : ''
+          if (cardKey === 'submitted') {
+            setStatusFilter('Submitted')
+          } else if (cardKey === 'inProgress') {
+            setStatusFilter('In Progress')
+          } else if (cardKey === 'waiting') {
+            setStatusFilter('Waiting for Franchisee')
+          } else if (cardKey === 'resolved') {
+            setStatusFilter('Resolved')
+          } else if (cardKey === 'urgent') {
+            setPriorityFilter('Urgent')
+          } else if (cardKey === 'nearSla') {
+            setSlaFilter('Near SLA')
+          } else if (cardKey === 'overdue') {
+            setSlaFilter('Overdue')
+          } else if (cardKey === 'myTickets') {
+            setShowMyTickets(true)
           }
-          onClick={() => {
-            setShowMyTickets(
-              (currentValue) =>
-                !currentValue
-            )
-          }}
-        >
-          {showMyTickets
-            ? 'Show All Tickets'
-            : `Show My Tickets (${myTicketsCount})`}
-        </button>
+        }}
+      />
 
-        {showMyTickets && (
-          <span>
-            Showing only tickets
-            assigned to your account.
-          </span>
-        )}
-      </div>
+      <section className="ticket-queue-section">
+        <div className="ticket-queue-header">
+          <div>
+            <span className="ticket-queue-eyebrow">
+              Customer Service Queue
+            </span>
 
-      <div className="filter-section">
+            <h2>
+              {showMyTickets
+                ? 'My Assigned Tickets'
+                : 'All Franchisee Tickets'}
+            </h2>
+
+            <p>
+              Monitor, prioritise, and resolve franchisee concerns from one workspace.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className={`ticket-queue-toggle ${
+              showMyTickets ? 'active' : ''
+            }`}
+            onClick={() => {
+              setShowMyTickets(
+                (currentValue) =>
+                  !currentValue
+              )
+            }}
+          >
+            {showMyTickets
+              ? 'Show All Tickets'
+              : `Show My Tickets (${myTicketsCount})`}
+          </button>
+        </div>
+
+        <div className="ticket-queue-kpis">
+          <article>
+            <span>Visible Tickets</span>
+            <strong>{filteredTickets.length}</strong>
+          </article>
+
+          <article>
+            <span>In Progress</span>
+            <strong>{inProgressCount}</strong>
+          </article>
+
+          <article>
+            <span>Near SLA</span>
+            <strong>{nearSlaCount}</strong>
+          </article>
+
+          <article className="attention">
+            <span>Overdue</span>
+            <strong>{overdueCount}</strong>
+          </article>
+        </div>
+
+        <div className="filter-section ticket-queue-filters">
         <input
           type="text"
           placeholder="Search by franchisee, ticket no., location, concern, representative, month or year..."
@@ -1131,6 +1656,27 @@ return (
 
         
 
+        <select
+          value={slaFilter}
+          onChange={(event) => {
+            setSlaFilter(
+              event.target.value
+            )
+          }}
+        >
+          <option value="All">
+            All SLA Statuses
+          </option>
+
+          <option value="Near SLA">
+            Near SLA
+          </option>
+
+          <option value="Overdue">
+            Overdue
+          </option>
+        </select>
+
         <input
   type="date"
   value={dateFilter}
@@ -1142,107 +1688,204 @@ return (
 />
       </div>
 
-      <div className="recent-section">
-        <h2>
-          {showMyTickets
-            ? 'My Assigned Tickets'
-            : 'All Franchisee Tickets'}
-        </h2>
+        <div className="recent-section ticket-queue-grid-wrap">
+          <div className="ticket-queue-result-bar">
+            <span>
+              {showMyTickets
+                ? 'Assigned to your account'
+                : 'All tickets'}
+            </span>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Ticket No.</th>
-              <th>Franchisee</th>
-              <th>Location</th>
-              <th>Concern</th>
-              <th>Date Submitted</th>
-              <th>Priority</th>
-              <th>Assigned To</th>
-              <th>Status</th>
-            </tr>
-          </thead>
+            <strong>
+              {filteredTickets.length}{' '}
+              {filteredTickets.length === 1
+                ? 'result'
+                : 'results'}
+            </strong>
+          </div>
 
-          <tbody>
-            {filteredTickets.length ===
-            0 ? (
-              <tr>
-                <td colSpan="8">
+          <div className="ticket-queue-grid-scroll">
+            <div className="ticket-queue-grid-header">
+              <span>Ticket No.</span>
+              <span>Franchisee</span>
+              <span>Location</span>
+              <span>Concern</span>
+              <span>Date Submitted</span>
+              <span>Priority</span>
+              <span>SLA</span>
+              <span>Assigned To</span>
+              <span>Status</span>
+              <span>Action</span>
+            </div>
+
+            <div className="ticket-queue-grid-body">
+              {filteredTickets.length === 0 ? (
+                <div className="ticket-queue-empty">
                   {showMyTickets
                     ? 'No tickets are currently assigned to you.'
                     : 'No matching tickets found.'}
-                </td>
-              </tr>
-            ) : (
-              filteredTickets.map(
-                (ticket) => (
-                  <tr
+                </div>
+              ) : (
+                filteredTickets.map((ticket) => (
+                  <div
+                    className="ticket-queue-grid-row"
                     key={ticket.id}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => {
-                      setSelectedTicket(
-                        ticket
-                      )
+                      setSelectedTicket(ticket)
                     }}
-                    style={{
-                      cursor:
-                        'pointer',
+                    onKeyDown={(event) => {
+                      if (
+                        event.key === 'Enter' ||
+                        event.key === ' '
+                      ) {
+                        setSelectedTicket(ticket)
+                      }
                     }}
                   >
-                    <td>
-                      {
-                        ticket.ticket_number
-                      }
-                    </td>
+                    <div>
+                      <span className="ticket-number-cell">
+                        🎫 {ticket.ticket_number}
+                      </span>
+                    </div>
 
-                    <td>
-                      {ticket.franchisee_name ||
-                        'N/A'}
-                    </td>
+                    <div>
+                      {ticket.franchisee_name || 'N/A'}
+                    </div>
 
-                    <td>
-                      {ticket.location ||
-                        'N/A'}
-                    </td>
+                    <div>
+                      {ticket.location || 'N/A'}
+                    </div>
 
-                    <td>
+                    <div className="ticket-concern-cell">
                       {ticket.subject}
-                    </td>
+                    </div>
 
-                    <td>
+                    <div>
                       {ticket.created_at
                         ? new Date(
                             ticket.created_at
                           ).toLocaleDateString()
                         : 'N/A'}
-                    </td>
+                    </div>
 
-                    <td>
-                      <span
-                        className={getPriorityClass(
-                          ticket.priority
-                        )}
-                      >
-                        {
-                          ticket.priority
-                        }
-                      </span>
-                    </td>
+                    <div
+                      onClick={(event) => {
+                        event.stopPropagation()
+                      }}
+                    >
+                      {ticket.priority_locked === true ? (
+                        <span
+                          className={getPriorityClass(
+                            ticket.priority || 'Low'
+                          )}
+                        >
+                          🔒 {ticket.priority || 'Low'}
+                        </span>
+                      ) : !ticket.assigned_to ? (
+                        <span className="priority-badge">
+                          Awaiting assignment
+                        </span>
+                      ) : isCustomerService &&
+                        ticket.assigned_to ===
+                          currentUserId ? (
+                        <select
+                          className={getPriorityClass(
+                            ticket.priority || 'Low'
+                          )}
+                          defaultValue=""
+                          onChange={(event) => {
+                            const selectedPriority =
+                              event.target.value
 
-                    <td>
+                            if (!selectedPriority) {
+                              return
+                            }
+
+                            handlePriorityChange(
+                              ticket.id,
+                              selectedPriority
+                            )
+                          }}
+                        >
+                          <option value="" disabled>
+                            Set Priority
+                          </option>
+                          <option value="Low">
+                            Low
+                          </option>
+                          <option value="Medium">
+                            Medium
+                          </option>
+                          <option value="High">
+                            High
+                          </option>
+                          <option value="Urgent">
+                            Urgent
+                          </option>
+                        </select>
+                      ) : (
+                        <span className="priority-badge">
+                          Assigned CS only
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      {(() => {
+                        const sla = getSlaDisplay(
+                          ticket,
+                          currentTime
+                        )
+
+                        return (
+                          <span className={sla.className}>
+                            {sla.label}
+                          </span>
+                        )
+                      })()}
+                    </div>
+
+                    <div>
                       {ticket.assigned_agent_name ||
                         'Unassigned'}
-                    </td>
+                    </div>
 
-                    <td>
-                      {ticket.status}
-                    </td>
-                  </tr>
-                )
-              )
-            )}
-          </tbody>
-        </table>
-      </div>
+                    <div>
+                      <span
+                        className={`status-badge status-${String(
+                          ticket.status || ''
+                        )
+                          .toLowerCase()
+                          .replaceAll(' ', '-')}`}
+                      >
+                        {ticket.status}
+                      </span>
+                    </div>
+
+                    <div
+                      onClick={(event) => {
+                        event.stopPropagation()
+                      }}
+                    >
+                      <button
+                        type="button"
+                        className="ticket-open-button"
+                        onClick={() => {
+                          setSelectedTicket(ticket)
+                        }}
+                      >
+                        Open →
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   )
 }

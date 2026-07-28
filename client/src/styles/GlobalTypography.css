@@ -1,0 +1,169 @@
+/* MLSN Portal — Global Compact Typography
+   Applies consistent sizing across Supervisor,
+   Customer Service, and Franchisee accounts. */
+
+:root {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  font-size: 12px;
+  color: #1d1530;
+  background: #f5f6fb;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* Main page titles */
+h1 {
+  font-size: clamp(26px, 2.4vw, 34px);
+  line-height: 1.12;
+}
+
+/* Section titles */
+h2 {
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+/* Card and widget titles */
+h3 {
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+h4 {
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+p,
+span,
+label,
+li,
+td,
+button,
+input,
+select,
+textarea {
+  font-size: 11px;
+}
+
+small {
+  font-size: 9px;
+}
+
+table {
+  font-size: 10px;
+}
+
+th {
+  font-size: 9px;
+}
+
+/* Dashboard-specific compact sizing */
+.admin-dashboard,
+.supervisor-dashboard,
+.customer-service-dashboard,
+.franchisee-dashboard,
+.portal-dashboard {
+  font-size: 11px;
+}
+
+.admin-dashboard h1,
+.supervisor-dashboard h1,
+.customer-service-dashboard h1,
+.franchisee-dashboard h1,
+.portal-dashboard h1 {
+  font-size: clamp(26px, 2.4vw, 34px);
+}
+
+.admin-dashboard h2,
+.supervisor-dashboard h2,
+.customer-service-dashboard h2,
+.franchisee-dashboard h2,
+.portal-dashboard h2 {
+  font-size: 16px;
+}
+
+.admin-dashboard h3,
+.supervisor-dashboard h3,
+.customer-service-dashboard h3,
+.franchisee-dashboard h3,
+.portal-dashboard h3 {
+  font-size: 13px;
+}
+
+/* Prevent third-party chart text from becoming too large */
+.recharts-wrapper,
+.recharts-surface,
+.recharts-text,
+.recharts-cartesian-axis-tick-value {
+  font-family: Arial, sans-serif;
+  font-size: 9px;
+}
+
+/* Buttons remain readable while compact */
+button {
+  min-height: 34px;
+}
+
+/* Form controls */
+input,
+select,
+textarea {
+  font-size: 11px;
+}
+
+/* Mobile adjustment */
+@media (max-width: 768px) {
+  body {
+    font-size: 13px;
+  }
+
+  p,
+  span,
+  label,
+  li,
+  td,
+  button,
+  input,
+  select,
+  textarea {
+    font-size: 12px;
+  }
+
+  small {
+    font-size: 10px;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+
+  h3 {
+    font-size: 14px;
+  }
+}

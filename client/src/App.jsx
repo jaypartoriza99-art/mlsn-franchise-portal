@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 import './App.css'
+import './styles/GlobalTypography.css'
 import logo from './assets/logo.png'
 import Portal from './pages/Portal'
 import AdminDashboard from './pages/AdminDashboard'
@@ -288,7 +289,6 @@ function App() {
 
       const validRoles = [
         'customer_service',
-        'admin',
         'supervisor',
         'franchisee',
       ]
@@ -470,7 +470,6 @@ function App() {
 
   const isAdminUser =
     userRole === 'customer_service' ||
-    userRole === 'admin' ||
     userRole === 'supervisor'
 
   if (loading) {
@@ -627,7 +626,10 @@ function App() {
     userRole === 'franchisee'
   ) {
     return (
-      <Portal onLogout={handleLogout} />
+      <Portal
+  onLogout={handleLogout}
+  userRole={userRole}
+/>
     )
   }
 

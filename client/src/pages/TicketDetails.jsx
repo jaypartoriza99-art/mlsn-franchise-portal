@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 function TicketDetails({ selectedTicket, onBack }) {
@@ -12,12 +12,20 @@ function TicketDetails({ selectedTicket, onBack }) {
   const [currentStatus, setCurrentStatus] = useState(
     selectedTicket?.status || 'Submitted'
   )
+  const [surveyRating, setSurveyRating] = useState(0)
+  const [surveyFeedback, setSurveyFeedback] = useState('')
+  const [existingSurvey, setExistingSurvey] = useState(null)
+  const [isSubmittingSurvey, setIsSubmittingSurvey] =
+    useState(false)
+  const [surveyError, setSurveyError] = useState('')
+  const [surveySuccess, setSurveySuccess] = useState('')
 
   useEffect(() => {
     if (!selectedTicket?.id) return
 
     setCurrentStatus(selectedTicket.status || 'Submitted')
     fetchMessages()
+    fetchSatisfactionSurvey()
 
     const channel = supabase
       .channel(`ticket-${selectedTicket.id}`)
@@ -42,7 +50,35 @@ function TicketDetails({ selectedTicket, onBack }) {
           filter: `id=eq.${selectedTicket.id}`,
         },
         (payload) => {
-          setCurrentStatus(payload.new.status)
+          const nextStatus =
+            payload.new.status
+
+          setCurrentStatus(nextStatus)
+
+          if (
+            nextStatus === 'Resolved' ||
+            nextStatus === 'Closed'
+          ) {
+            setReply('')
+            setAttachment(null)
+            setFileInputKey(
+              (currentKey) =>
+                currentKey + 1
+            )
+            fetchSatisfactionSurvey()
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'ticket_satisfaction_surveys',
+          filter: `ticket_id=eq.${selectedTicket.id}`,
+        },
+        () => {
+          fetchSatisfactionSurvey()
         }
       )
       .subscribe((status, error) => {
@@ -81,6 +117,149 @@ function TicketDetails({ selectedTicket, onBack }) {
     }
 
     setMessages(data || [])
+  }
+
+  async function fetchSatisfactionSurvey() {
+    if (!selectedTicket?.id) return
+
+    const { data, error } = await supabase
+      .from('ticket_satisfaction_surveys')
+      .select(
+        'id, rating, feedback, created_at'
+      )
+      .eq('ticket_id', selectedTicket.id)
+      .maybeSingle()
+
+    if (error) {
+      console.error(
+        'Error loading satisfaction survey:',
+        error
+      )
+      return
+    }
+
+    setExistingSurvey(data || null)
+  }
+
+  async function handleSubmitSurvey() {
+    setSurveyError('')
+    setSurveySuccess('')
+
+    if (!isTicketClosed) {
+      setSurveyError(
+        'The survey is available only after the ticket is resolved or closed.'
+      )
+      return
+    }
+
+    if (
+      surveyRating < 1 ||
+      surveyRating > 5
+    ) {
+      setSurveyError(
+        'Please select a rating from 1 to 5 stars.'
+      )
+      return
+    }
+
+    setIsSubmittingSurvey(true)
+
+    try {
+      const {
+        data: userData,
+        error: userError,
+      } = await supabase.auth.getUser()
+
+      const user = userData?.user
+
+      if (userError || !user) {
+        setSurveyError(
+          'You must be logged in to submit feedback.'
+        )
+        return
+      }
+
+      const {
+        data: ticketData,
+        error: ticketError,
+      } = await supabase
+        .from('tickets')
+        .select(
+          'user_id, assigned_to, status'
+        )
+        .eq('id', selectedTicket.id)
+        .single()
+
+      if (ticketError || !ticketData) {
+        setSurveyError(
+          ticketError?.message ||
+            'Unable to verify this ticket.'
+        )
+        return
+      }
+
+      if (ticketData.user_id !== user.id) {
+        setSurveyError(
+          'You are not authorized to rate this ticket.'
+        )
+        return
+      }
+
+      if (
+        ticketData.status !== 'Resolved' &&
+        ticketData.status !== 'Closed'
+      ) {
+        setCurrentStatus(ticketData.status)
+        setSurveyError(
+          'This ticket is not yet resolved or closed.'
+        )
+        return
+      }
+
+      const { data, error } = await supabase
+        .from(
+          'ticket_satisfaction_surveys'
+        )
+        .insert([
+          {
+            ticket_id:
+              selectedTicket.id,
+            franchisee_id: user.id,
+            assigned_to:
+              ticketData.assigned_to ||
+              null,
+            rating: surveyRating,
+            feedback:
+              surveyFeedback.trim() ||
+              null,
+          },
+        ])
+        .select(
+          'id, rating, feedback, created_at'
+        )
+        .single()
+
+      if (error) {
+        if (error.code === '23505') {
+          await fetchSatisfactionSurvey()
+          setSurveyError(
+            'Feedback has already been submitted for this ticket.'
+          )
+          return
+        }
+
+        setSurveyError(error.message)
+        return
+      }
+
+      setExistingSurvey(data)
+      setSurveyFeedback('')
+      setSurveySuccess(
+        'Thank you! Your feedback has been submitted successfully.'
+      )
+    } finally {
+      setIsSubmittingSurvey(false)
+    }
   }
 
   async function createCustomerServiceNotifications() {
@@ -150,9 +329,117 @@ function TicketDetails({ selectedTicket, onBack }) {
     return true
   }
 
+  const isTicketClosed =
+    currentStatus === 'Resolved' ||
+    currentStatus === 'Closed'
+
+  const activityItems = useMemo(() => {
+    const items = []
+
+    if (selectedTicket?.created_at) {
+      items.push({
+        id: 'ticket-created',
+        type: 'created',
+        icon: '🟢',
+        title: 'Ticket created',
+        description: 'The concern was submitted to Customer Service.',
+        createdAt: selectedTicket.created_at,
+      })
+    }
+
+    messages.forEach((message) => {
+      const isCustomerService =
+        message.sender_type === 'customer_service'
+
+      const senderName =
+        message.profiles?.full_name ||
+        message.profiles?.email ||
+        (isCustomerService
+          ? 'Customer Service'
+          : 'Franchisee')
+
+      items.push({
+        id: `message-${message.id}`,
+        type: message.attachment_url
+          ? 'attachment'
+          : 'message',
+        icon: message.attachment_url
+          ? '📎'
+          : isCustomerService
+          ? '💬'
+          : '🏪',
+        title: message.attachment_url
+          ? `${senderName} added an attachment`
+          : `${senderName} sent a message`,
+        description: message.message,
+        createdAt: message.created_at,
+      })
+    })
+
+    if (isTicketClosed) {
+      items.push({
+        id: 'ticket-current-status',
+        type: 'status',
+        icon:
+          currentStatus === 'Closed'
+            ? '⚫'
+            : '✅',
+        title: `Ticket ${currentStatus.toLowerCase()}`,
+        description:
+          'This reflects the ticket’s current status. Exact historical status changes require an audit-log table.',
+        createdAt:
+          selectedTicket?.updated_at ||
+          selectedTicket?.resolved_at ||
+          null,
+      })
+    }
+
+    if (existingSurvey) {
+      items.push({
+        id: `survey-${existingSurvey.id}`,
+        type: 'survey',
+        icon: '⭐',
+        title: 'Satisfaction survey submitted',
+        description: `${existingSurvey.rating} out of 5 stars`,
+        createdAt: existingSurvey.created_at,
+      })
+    }
+
+    return items.sort((a, b) => {
+      if (!a.createdAt && !b.createdAt) return 0
+      if (!a.createdAt) return 1
+      if (!b.createdAt) return -1
+
+      return (
+        new Date(a.createdAt).getTime() -
+        new Date(b.createdAt).getTime()
+      )
+    })
+  }, [
+    selectedTicket,
+    messages,
+    existingSurvey,
+    currentStatus,
+    isTicketClosed,
+  ])
+
+  const assignedAgentName =
+    selectedTicket?.assigned_profile?.full_name ||
+    selectedTicket?.assigned_to_profile?.full_name ||
+    selectedTicket?.assigned_name ||
+    selectedTicket?.assigned_to_name ||
+    'Not yet assigned'
+
   async function handleSendReply() {
     setErrorMessage('')
     setSuccessMessage('')
+
+    if (isTicketClosed) {
+      setErrorMessage(
+        'Messaging is disabled because this ticket is already resolved or closed.'
+      )
+      return
+    }
 
     if (!reply.trim() && !attachment) {
       setErrorMessage(
@@ -262,38 +549,143 @@ function TicketDetails({ selectedTicket, onBack }) {
   }
 
   return (
-    <>
-      <div className="page-header">
-        <h1>{selectedTicket.ticketNo}</h1>
-        <p>{selectedTicket.concern}</p>
-      </div>
+    <div className="ticket-details-page">
+      <section className="ticket-detail-hero">
+        <div>
+          <span className="ticket-detail-eyebrow">
+            Customer Service Ticket
+          </span>
 
-      <div className="ticket-details-card">
-        <div className="ticket-info">
-          <div>
-            <strong>Department</strong>
-            <p>{selectedTicket.department}</p>
+          <div className="ticket-detail-title-row">
+            <h1>{selectedTicket.ticketNo}</h1>
+
+            <span
+              className={`ticket-detail-status status-${String(
+                currentStatus
+              )
+                .toLowerCase()
+                .replaceAll(' ', '-')}`}
+            >
+              {currentStatus}
+            </span>
           </div>
 
-          <div>
-            <strong>Priority</strong>
-            <p>{selectedTicket.priority}</p>
-          </div>
-
-          <div>
-            <strong>Status</strong>
-            <p>{currentStatus}</p>
-          </div>
+          <p>{selectedTicket.concern}</p>
         </div>
 
-        <div className="ticket-description">
-          <strong>Description</strong>
+        <button
+          type="button"
+          className="ticket-hero-back-button"
+          onClick={onBack}
+        >
+          ← Back to My Tickets
+        </button>
+      </section>
+
+      <div className="ticket-details-card ticket-details-modern">
+        <section className="ticket-summary-grid">
+
+
+          <article>
+            <span>Created</span>
+            <strong>
+              {selectedTicket.created_at
+                ? new Date(
+                    selectedTicket.created_at
+                  ).toLocaleString()
+                : 'Not available'}
+            </strong>
+          </article>
+
+          <article>
+            <span>Last Updated</span>
+            <strong>
+              {selectedTicket.updated_at
+                ? new Date(
+                    selectedTicket.updated_at
+                  ).toLocaleString()
+                : 'Not available'}
+            </strong>
+          </article>
+
+          <article>
+            <span>Current Status</span>
+            <strong>{currentStatus}</strong>
+          </article>
+        </section>
+
+        <section className="ticket-description-modern">
+          <span>Concern Description</span>
           <p>{selectedTicket.description}</p>
-        </div>
+        </section>
 
-        <hr />
+        <section className="ticket-activity-section">
+          <div className="ticket-section-heading">
+            <div>
+              <span>Ticket History</span>
+              <h2>Activity Timeline</h2>
+            </div>
 
-        <h2>Conversation</h2>
+            <small>
+              {activityItems.length}{' '}
+              {activityItems.length === 1
+                ? 'activity'
+                : 'activities'}
+            </small>
+          </div>
+
+          <div className="ticket-activity-list">
+            {activityItems.length === 0 ? (
+              <div className="ticket-empty-state">
+                No activity is available yet.
+              </div>
+            ) : (
+              activityItems.map((activity) => (
+                <article
+                  className={`ticket-activity-item activity-${activity.type}`}
+                  key={activity.id}
+                >
+                  <div className="ticket-activity-icon">
+                    {activity.icon}
+                  </div>
+
+                  <div className="ticket-activity-content">
+                    <div className="ticket-activity-header">
+                      <strong>{activity.title}</strong>
+
+                      <time>
+                        {activity.createdAt
+                          ? new Date(
+                              activity.createdAt
+                            ).toLocaleString()
+                          : 'Current status'}
+                      </time>
+                    </div>
+
+                    {activity.description && (
+                      <p>{activity.description}</p>
+                    )}
+                  </div>
+                </article>
+              ))
+            )}
+          </div>
+        </section>
+
+        <section className="ticket-conversation-section">
+          <div className="ticket-section-heading">
+            <div>
+              <span>Communication</span>
+              <h2>Conversation</h2>
+            </div>
+
+            <small>
+              {messages.length + 1}{' '}
+              {messages.length + 1 === 1
+                ? 'message'
+                : 'messages'}
+            </small>
+          </div>
 
         {errorMessage && (
           <div className="error-message">
@@ -402,17 +794,30 @@ function TicketDetails({ selectedTicket, onBack }) {
         </div>
 
         <div className="reply-section">
+          {isTicketClosed && (
+            <div className="success-message">
+              ✅ This ticket has already been resolved or closed.
+              Messaging is now disabled.
+            </div>
+          )}
+
           <textarea
-            placeholder="Type your message here..."
+            placeholder={
+              isTicketClosed
+                ? 'Messaging is disabled for this ticket.'
+                : 'Type your message here...'
+            }
             value={reply}
             onChange={(event) =>
               setReply(event.target.value)
             }
+            disabled={isTicketClosed}
           />
 
           <input
             key={fileInputKey}
             type="file"
+            disabled={isTicketClosed}
             onChange={(event) =>
               setAttachment(
                 event.target.files?.[0] || null
@@ -420,7 +825,7 @@ function TicketDetails({ selectedTicket, onBack }) {
             }
           />
 
-          {attachment && (
+          {attachment && !isTicketClosed && (
             <p>
               Selected file:{' '}
               <strong>{attachment.name}</strong>
@@ -429,20 +834,179 @@ function TicketDetails({ selectedTicket, onBack }) {
 
           <button
             onClick={handleSendReply}
-            disabled={isSending}
+            disabled={
+              isSending ||
+              isTicketClosed
+            }
           >
-            {isSending ? 'Sending...' : 'Send Reply'}
+            {isTicketClosed
+              ? 'Messaging Disabled'
+              : isSending
+              ? 'Sending...'
+              : 'Send Reply'}
           </button>
         </div>
 
-        <button
-          className="back-button"
-          onClick={onBack}
-        >
-          ← Back to My Tickets
-        </button>
+        </section>
+
+        {isTicketClosed && (
+          <div className="satisfaction-survey">
+            <h2>Rate Our Support</h2>
+
+            {existingSurvey ? (
+              <div className="survey-thank-you">
+                <div className="survey-stars submitted">
+                  {Array.from(
+                    { length: 5 },
+                    (_, index) => (
+                      <span
+                        key={index}
+                        className={
+                          index <
+                          existingSurvey.rating
+                            ? 'active'
+                            : ''
+                        }
+                      >
+                        ★
+                      </span>
+                    )
+                  )}
+                </div>
+
+                <strong>
+                  Thank you for your feedback!
+                </strong>
+
+                <p>
+                  You rated this support experience{' '}
+                  {existingSurvey.rating} out of 5.
+                </p>
+
+                {existingSurvey.feedback && (
+                  <div className="submitted-feedback">
+                    <strong>Your comment</strong>
+                    <p>
+                      {existingSurvey.feedback}
+                    </p>
+                  </div>
+                )}
+
+                <small>
+                  Submitted on{' '}
+                  {new Date(
+                    existingSurvey.created_at
+                  ).toLocaleString()}
+                </small>
+              </div>
+            ) : (
+              <>
+                <p>
+                  How satisfied are you with the
+                  support you received?
+                </p>
+
+                <div
+                  className="survey-stars"
+                  role="radiogroup"
+                  aria-label="Support rating"
+                >
+                  {[1, 2, 3, 4, 5].map(
+                    (ratingValue) => (
+                      <button
+                        key={ratingValue}
+                        type="button"
+                        className={
+                          ratingValue <=
+                          surveyRating
+                            ? 'active'
+                            : ''
+                        }
+                        onClick={() =>
+                          setSurveyRating(
+                            ratingValue
+                          )
+                        }
+                        aria-label={`${ratingValue} star${
+                          ratingValue > 1
+                            ? 's'
+                            : ''
+                        }`}
+                        aria-pressed={
+                          surveyRating ===
+                          ratingValue
+                        }
+                      >
+                        ★
+                      </button>
+                    )
+                  )}
+                </div>
+
+                <p className="survey-rating-label">
+                  {surveyRating === 1
+                    ? 'Very Dissatisfied'
+                    : surveyRating === 2
+                    ? 'Dissatisfied'
+                    : surveyRating === 3
+                    ? 'Neutral'
+                    : surveyRating === 4
+                    ? 'Satisfied'
+                    : surveyRating === 5
+                    ? 'Very Satisfied'
+                    : 'Select your rating'}
+                </p>
+
+                <textarea
+                  className="survey-feedback"
+                  placeholder="Share additional comments (optional)"
+                  value={surveyFeedback}
+                  onChange={(event) =>
+                    setSurveyFeedback(
+                      event.target.value
+                    )
+                  }
+                  maxLength={1000}
+                />
+
+                <small className="survey-character-count">
+                  {surveyFeedback.length}/1000
+                </small>
+
+                {surveyError && (
+                  <div className="error-message">
+                    {surveyError}
+                  </div>
+                )}
+
+                {surveySuccess && (
+                  <div className="success-message">
+                    {surveySuccess}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  className="submit-survey-button"
+                  onClick={
+                    handleSubmitSurvey
+                  }
+                  disabled={
+                    isSubmittingSurvey ||
+                    surveyRating === 0
+                  }
+                >
+                  {isSubmittingSurvey
+                    ? 'Submitting...'
+                    : 'Submit Feedback'}
+                </button>
+              </>
+            )}
+          </div>
+        )}
+
       </div>
-    </>
+    </div>
   )
 }
 

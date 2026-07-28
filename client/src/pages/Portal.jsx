@@ -8,7 +8,7 @@ import Announcements from './Announcements'
 import TicketDetails from './TicketDetails'
 import Profile from './Profile'
 
-function Portal({ onLogout }) {
+function Portal({ onLogout, userRole }) {
   const [activePage, setActivePage] =
     useState('dashboard')
 
@@ -64,6 +64,7 @@ function Portal({ onLogout }) {
   useEffect(() => {
     let notificationChannel
     let announcementChannel
+    let ticketsChannel
     let isCancelled = false
 
     const channelInstanceId =
@@ -94,6 +95,36 @@ function Portal({ onLogout }) {
       if (isCancelled) {
         return
       }
+
+      ticketsChannel = supabase
+        .channel(
+          `portal-tickets-${user.id}-${channelInstanceId}`
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'tickets',
+            filter: `user_id=eq.${user.id}`,
+          },
+          () => {
+            fetchTickets()
+          }
+        )
+        .subscribe((status, error) => {
+          console.log(
+            'Portal tickets realtime status:',
+            status
+          )
+
+          if (error) {
+            console.error(
+              'Portal tickets realtime error:',
+              error
+            )
+          }
+        })
 
       notificationChannel = supabase
         .channel(
@@ -198,6 +229,12 @@ function Portal({ onLogout }) {
 
     return () => {
       isCancelled = true
+
+      if (ticketsChannel) {
+        supabase.removeChannel(
+          ticketsChannel
+        )
+      }
 
       if (notificationChannel) {
         supabase.removeChannel(
@@ -449,6 +486,56 @@ function Portal({ onLogout }) {
     setUnreadNotifications(0)
   }
 
+  async function handleNotificationClick(
+    notification
+  ) {
+    if (!notification.ticket_id) {
+      return
+    }
+
+    let ticketToOpen =
+      tickets.find(
+        (ticket) =>
+          ticket.id ===
+          notification.ticket_id
+      )
+
+    if (!ticketToOpen) {
+      const { data, error } =
+        await supabase
+          .from('tickets')
+          .select('*')
+          .eq(
+            'id',
+            notification.ticket_id
+          )
+          .single()
+
+      if (error || !data) {
+        console.error(
+          'Unable to open notification ticket:',
+          error
+        )
+        return
+      }
+
+      ticketToOpen = {
+        id: data.id,
+        ticketNo:
+          data.ticket_number,
+        concern: data.subject,
+        department: data.category,
+        priority: data.priority,
+        description:
+          data.description,
+        status: data.status,
+      }
+    }
+
+    setSelectedTicket(ticketToOpen)
+    setActivePage('ticketDetails')
+  }
+
   return (
     <div className="portal-layout">
       <Sidebar
@@ -471,8 +558,11 @@ function Portal({ onLogout }) {
 
       <main className="main-content">
         {activePage === 'dashboard' && (
-          <Dashboard tickets={tickets} />
-        )}
+  <Dashboard
+    tickets={tickets}
+    userRole={userRole}
+  />
+)}
 
         {activePage === 'submit' && (
           <SubmitConcern
@@ -526,6 +616,30 @@ function Portal({ onLogout }) {
                       key={
                         notification.id
                       }
+                      role="button"
+                      tabIndex={0}
+                      onClick={() =>
+                        handleNotificationClick(
+                          notification
+                        )
+                      }
+                      onKeyDown={(event) => {
+                        if (
+                          event.key ===
+                            'Enter' ||
+                          event.key === ' '
+                        ) {
+                          handleNotificationClick(
+                            notification
+                          )
+                        }
+                      }}
+                      style={{
+                        cursor:
+                          notification.ticket_id
+                            ? 'pointer'
+                            : 'default',
+                      }}
                     >
                       <strong>
                         {

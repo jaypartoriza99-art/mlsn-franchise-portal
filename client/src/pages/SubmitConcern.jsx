@@ -8,9 +8,6 @@ function SubmitConcern({
   const [category, setCategory] =
     useState('Marketing')
 
-  const [priority, setPriority] =
-    useState('Low')
-
   const [location, setLocation] =
     useState('')
 
@@ -77,8 +74,7 @@ function SubmitConcern({
         title: 'New Ticket Submitted',
         message:
           `${ticket.ticket_number} — ` +
-          `${ticket.subject} ` +
-          `(${ticket.priority} priority)`,
+          `${ticket.subject}`,
         notification_type:
           'new_ticket',
         is_read: false,
@@ -175,12 +171,11 @@ function SubmitConcern({
       const newTicket = {
         ticket_number: ticketNo,
         user_id: user.id,
-        franchisee_name:
-          franchiseeName,
-        location:
-          location.trim(),
+        full_name: franchiseeName,
+        location: location.trim(),
         category,
-        priority,
+        priority: 'Low',
+        priority_locked: false,
         subject: subject.trim(),
         description:
           description.trim(),
@@ -212,8 +207,8 @@ function SubmitConcern({
           data.ticket_number,
         ticket_number:
           data.ticket_number,
-        franchisee_name:
-          data.franchisee_name,
+        full_name:
+          data.full_name,
         location:
           data.location,
         concern: data.subject,
@@ -221,6 +216,8 @@ function SubmitConcern({
         department: data.category,
         category: data.category,
         priority: data.priority,
+        priority_locked:
+          data.priority_locked,
         description:
           data.description,
         status: data.status,
@@ -258,7 +255,6 @@ function SubmitConcern({
       setLocation('')
       setSubject('')
       setDescription('')
-      setPriority('Low')
       setCategory('Marketing')
     } catch (error) {
       console.error(
@@ -334,37 +330,6 @@ function SubmitConcern({
 
           <option value="Others">
             Others
-          </option>
-        </select>
-
-        <label htmlFor="concern-priority">
-          Priority
-        </label>
-
-        <select
-          id="concern-priority"
-          value={priority}
-          onChange={(event) => {
-            setPriority(
-              event.target.value
-            )
-          }}
-          disabled={isSubmitting}
-        >
-          <option value="Low">
-            Low
-          </option>
-
-          <option value="Medium">
-            Medium
-          </option>
-
-          <option value="High">
-            High
-          </option>
-
-          <option value="Urgent">
-            Urgent
           </option>
         </select>
 
