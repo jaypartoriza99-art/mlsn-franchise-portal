@@ -3993,3 +3993,271 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* =====================================================
+   MLSN ACROSS THE PHILIPPINES
+===================================================== */
+
+.nationwide-section {
+  position: relative;
+}
+
+.nationwide-highlight-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.5fr);
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.nationwide-feature-card {
+  position: relative;
+  min-height: 450px;
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--purple-deep);
+  box-shadow: var(--shadow);
+}
+
+.nationwide-feature-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nationwide-feature-card:hover img {
+  transform: scale(1.06);
+}
+
+.nationwide-feature-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(36, 7, 57, 0.95) 0%,
+    rgba(76, 22, 120, 0.74) 52%,
+    rgba(76, 22, 120, 0.18) 100%
+  );
+}
+
+.nationwide-feature-content {
+  position: relative;
+  z-index: 2;
+  max-width: 590px;
+  min-height: 450px;
+  padding: 54px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.nationwide-feature-content > span,
+.nationwide-footer-label {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.nationwide-feature-content h3 {
+  margin: 14px 0;
+  color: #ffffff;
+  font-size: clamp(30px, 3.5vw, 48px);
+  line-height: 1.08;
+}
+
+.nationwide-feature-content p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.nationwide-metrics {
+  padding: 28px;
+  display: grid;
+  gap: 16px;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background: linear-gradient(
+    180deg,
+    #ffffff,
+    var(--purple-soft)
+  );
+  box-shadow: var(--shadow);
+}
+
+.nationwide-metrics div {
+  min-height: 110px;
+  padding: 22px;
+  display: grid;
+  align-content: center;
+  border: 1px solid rgba(111, 45, 189, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.nationwide-metrics strong {
+  color: var(--purple);
+  font-size: 34px;
+  line-height: 1;
+}
+
+.nationwide-metrics span {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.nationwide-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.nationwide-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(66, 24, 98, 0.08);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease;
+}
+
+.nationwide-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 22px 48px rgba(76, 22, 120, 0.14);
+}
+
+.nationwide-card-image {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  background: var(--purple-soft);
+}
+
+.nationwide-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nationwide-card:hover .nationwide-card-image img {
+  transform: scale(1.06);
+}
+
+.nationwide-location {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(47, 11, 74, 0.82);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.nationwide-card-content {
+  padding: 22px;
+}
+
+.nationwide-card-content h3 {
+  margin: 0 0 10px;
+  color: var(--purple-deep);
+  font-size: 18px;
+}
+
+.nationwide-card-content p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.nationwide-footer {
+  margin-top: 30px;
+  padding: 30px 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  border-radius: 22px;
+  background: linear-gradient(
+    135deg,
+    var(--purple-deep),
+    var(--purple)
+  );
+}
+
+.nationwide-footer h3 {
+  margin: 10px 0 0;
+  color: #ffffff;
+  font-size: 23px;
+}
+
+.nationwide-footer p {
+  max-width: 440px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.65;
+}
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 1000px) {
+  .nationwide-highlight-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nationwide-metrics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .nationwide-metrics div {
+    min-height: 100px;
+  }
+
+  .nationwide-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+  .nationwide-feature-card,
+  .nationwide-feature-content {
+    min-height: 520px;
+  }
+
+  .nationwide-feature-content {
+    padding: 30px 24px;
+  }
+
+  .nationwide-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .nationwide-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .nationwide-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 26px 24px;
+  }
+}

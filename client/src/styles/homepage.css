@@ -1550,3 +1550,256 @@ opacity:1;
 transform:translateY(0)}
 
 }
+
+/* =====================================================
+   PREMIUM FRANCHISE CONCEPTS
+   Paste this at the very bottom of homepage.css
+===================================================== */
+
+.premium-concept-grid {
+  align-items: stretch;
+}
+
+.premium-concept-card {
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(111, 45, 189, 0.14);
+  border-radius: 26px;
+  background: #ffffff;
+  box-shadow: 0 12px 34px rgba(66, 24, 98, 0.09);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.32s ease,
+    border-color 0.32s ease;
+}
+
+.premium-concept-card:hover {
+  transform: translateY(-9px);
+  border-color: rgba(111, 45, 189, 0.28);
+  box-shadow: 0 26px 58px rgba(76, 22, 120, 0.16);
+}
+
+.premium-concept-image-area {
+  position: relative;
+  height: 285px;
+  overflow: hidden;
+  background: var(--purple-soft);
+}
+
+.premium-concept-image-area .concept-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.premium-concept-card:hover .concept-image {
+  transform: scale(1.07);
+}
+
+.concept-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(47, 11, 74, 0.04) 20%,
+    rgba(47, 11, 74, 0.82) 100%
+  );
+}
+
+.concept-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 22px rgba(32, 8, 50, 0.18);
+}
+
+.concept-badge-featured {
+  background: rgba(229, 185, 47, 0.92);
+  color: var(--purple-deep);
+}
+
+.concept-badge-new {
+  background: rgba(111, 45, 189, 0.9);
+}
+
+.concept-badge-beverage {
+  background: rgba(76, 22, 120, 0.88);
+}
+
+.concept-badge-premium {
+  background: rgba(47, 11, 74, 0.9);
+}
+
+.concept-badge-classic {
+  background: rgba(163, 93, 24, 0.9);
+}
+
+.concept-badge-compact {
+  background: rgba(111, 45, 189, 0.84);
+}
+
+.concept-image-title {
+  position: absolute;
+  z-index: 2;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+}
+
+.concept-image-title > span {
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+}
+
+.concept-image-title h3 {
+  margin: 7px 0 0;
+  color: #ffffff;
+  font-size: 28px;
+  line-height: 1.08;
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.26);
+}
+
+.premium-concept-content {
+  flex: 1;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+}
+
+.concept-description {
+  min-height: 76px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.concept-format {
+  margin-top: 20px;
+  padding: 16px 18px;
+  display: grid;
+  gap: 5px;
+  border: 1px solid rgba(111, 45, 189, 0.1);
+  border-radius: 15px;
+  background: var(--purple-soft);
+}
+
+.concept-format span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.concept-format strong {
+  color: var(--purple-deep);
+  font-size: 13px;
+}
+
+.premium-concept-content .concept-highlights {
+  display: grid;
+  gap: 11px;
+  margin: 22px 0 26px;
+}
+
+.premium-concept-content .concept-highlight {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #4c4053;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.concept-check {
+  flex: 0 0 auto;
+  width: 21px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(111, 45, 189, 0.1);
+  color: var(--purple);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.concept-card-footer {
+  margin-top: auto;
+  padding-top: 22px;
+  border-top: 1px solid rgba(111, 45, 189, 0.1);
+}
+
+.premium-concept-content .concept-price {
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
+}
+
+.premium-concept-content .concept-price-value {
+  font-size: 28px;
+}
+
+.premium-concept-content .concept-inquire-button {
+  width: 100%;
+  margin: 0;
+  padding: 15px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    var(--purple-dark),
+    var(--purple)
+  );
+  color: #ffffff;
+  font-weight: 850;
+  cursor: pointer;
+  box-shadow: 0 12px 26px rgba(111, 45, 189, 0.18);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.premium-concept-content .concept-inquire-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(111, 45, 189, 0.26);
+}
+
+@media (max-width: 1050px) {
+  .premium-concept-image-area {
+    height: 270px;
+  }
+}
+
+@media (max-width: 700px) {
+  .premium-concept-image-area {
+    height: 260px;
+  }
+
+  .concept-description {
+    min-height: 0;
+  }
+
+  .concept-image-title h3 {
+    font-size: 25px;
+  }
+}

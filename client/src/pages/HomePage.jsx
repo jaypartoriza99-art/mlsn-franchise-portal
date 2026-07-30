@@ -18,6 +18,7 @@ import inasalImage from '../assets/inasal.jpg'
 import crispyFriesImage from '../assets/crispy-fries.jpg'
 import purpleBlendImage from '../assets/purple-blend.jpg'
 import cfcImage from '../assets/cfc.png'
+import NationwideSection from '../components/NationwideSection'
 
 function HomePage({ onOpenLogin }) {
   const [fullName, setFullName] = useState('')
@@ -228,6 +229,9 @@ function HomePage({ onOpenLogin }) {
       description:
         'Filipino grilled chicken franchise designed for affordable, accessible operations.',
       startingFrom: '₱88,000',
+      badge: 'Featured Concept',
+      badgeTone: 'featured',
+      format: 'Cart, kiosk, or compact store',
       highlights: ['Grilled chicken skewers & rice meals', 'Compact cart or kiosk format', 'High-traffic location ready'],
     },
     {
@@ -237,6 +241,9 @@ function HomePage({ onOpenLogin }) {
       description:
         'Modern café franchise offering specialty coffee and refreshing beverages.',
       startingFrom: '₱120,000',
+      badge: 'Beverage Concept',
+      badgeTone: 'beverage',
+      format: 'Café, kiosk, or cart',
       highlights: ['Specialty coffee & tea drinks', 'Taro, ube, and signature blends', 'Café or cart format'],
     },
     {
@@ -246,6 +253,9 @@ function HomePage({ onOpenLogin }) {
       description:
         'Korean-inspired frozen yogurt franchise with customizable toppings and healthy options.',
       startingFrom: '₱150,000',
+      badge: 'New Concept',
+      badgeTone: 'new',
+      format: 'Kiosk or full store',
       highlights: ['Self-serve frozen yogurt', 'Customizable toppings bar', 'Mall and high-foot-traffic ready'],
     },
     {
@@ -255,6 +265,9 @@ function HomePage({ onOpenLogin }) {
       description:
         'Boneless fried chicken franchise featuring signature flavors paired with milkshakes.',
       startingFrom: '₱180,000',
+      badge: 'Premium Format',
+      badgeTone: 'premium',
+      format: 'Kiosk or full store',
       highlights: ['Boneless fried chicken flavors', 'Signature milkshake varieties', 'Full store or kiosk format'],
     },
     {
@@ -264,6 +277,9 @@ function HomePage({ onOpenLogin }) {
       description:
         'Filipino roasted chicken concept inspired by the country\'s well-loved lechon manok industry.',
       startingFrom: '₱95,000',
+      badge: 'Neighbourhood Favourite',
+      badgeTone: 'classic',
+      format: 'Take-out or neighbourhood store',
       highlights: ['Roasted chicken (lechon manok)', 'Pinoy-style sides & combos', 'High-demand neighborhood format'],
     },
     {
@@ -273,6 +289,9 @@ function HomePage({ onOpenLogin }) {
       description:
         'Snack business concept offering affordable, high-demand potato products.',
       startingFrom: '₱75,000',
+      badge: 'Compact Format',
+      badgeTone: 'compact',
+      format: 'Cart or kiosk',
       highlights: ['Flavored fries & snacks', 'Low-footprint cart format', 'Quick-service, high turnover'],
     },
   ]
@@ -613,21 +632,29 @@ function HomePage({ onOpenLogin }) {
         </div>
       </section>
 
+      {/* MLSN ACROSS THE PHILIPPINES */}
+      <NationwideSection />
+
       {/* CONCEPTS */}
       <section id="concepts" className="website-section concepts-section">
         <div className="section-header fade-up">
           <span className="section-label">Our Franchise Concepts</span>
-          <h2>Find the Perfect Franchise For You</h2>
+          <h2>Find the Perfect Franchise for You</h2>
           <p>
-            From grilled chicken and coffee to frozen yogurt and snack concepts, discover
-            the business opportunity that matches your goals.
+            Explore food, beverage, dessert, and snack concepts designed for
+            different budgets, locations, and operating formats.
           </p>
         </div>
 
-        <div className="concept-grid">
-          {concepts.map((concept) => (
-            <div key={concept.name} className="concept-card upgraded-concept-card fade-up">
-              <div className="concept-image-area">
+        <div className="concept-grid premium-concept-grid">
+          {concepts.map((concept, index) => (
+            <article
+              key={concept.name}
+              className={`concept-card premium-concept-card fade-up animation-delay-${
+                (index % 3) + 1
+              }`}
+            >
+              <div className="concept-image-area premium-concept-image-area">
                 {concept.image ? (
                   <img
                     src={concept.image}
@@ -637,32 +664,60 @@ function HomePage({ onOpenLogin }) {
                 ) : (
                   <div className="concept-emoji">{concept.emoji}</div>
                 )}
+
+                <div className="concept-image-overlay" />
+
+                <span
+                  className={`concept-badge concept-badge-${concept.badgeTone}`}
+                >
+                  {concept.badge}
+                </span>
+
+                <div className="concept-image-title">
+                  <span>{concept.category}</span>
+                  <h3>{concept.name}</h3>
+                </div>
               </div>
-              <div className="concept-card-content">
-                <span className="concept-category">{concept.category}</span>
-                <h3>{concept.name}</h3>
-                <p>{concept.description}</p>
+
+              <div className="concept-card-content premium-concept-content">
+                <p className="concept-description">{concept.description}</p>
+
+                <div className="concept-format">
+                  <span>Recommended Format</span>
+                  <strong>{concept.format}</strong>
+                </div>
+
                 <div className="concept-highlights">
-                  {concept.highlights.map((h) => (
-                    <span key={h} className="concept-highlight">✓ {h}</span>
+                  {concept.highlights.map((highlight) => (
+                    <span key={highlight} className="concept-highlight">
+                      <span className="concept-check">✓</span>
+                      {highlight}
+                    </span>
                   ))}
                 </div>
-                <div className="concept-price">
-                  <span className="concept-price-label">Starting from</span>
-                  <span className="concept-price-value">{concept.startingFrom}</span>
+
+                <div className="concept-card-footer">
+                  <div className="concept-price">
+                    <span className="concept-price-label">Starting from</span>
+                    <span className="concept-price-value">
+                      {concept.startingFrom}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="concept-inquire-button"
+                    onClick={() => {
+                      setInterestedConcept(concept.name)
+                      scrollToInquiry()
+                    }}
+                  >
+                    View Franchise Details
+                    <span aria-hidden="true">→</span>
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  className="concept-inquire-button"
-                  onClick={() => {
-                    setInterestedConcept(concept.name)
-                    scrollToInquiry()
-                  }}
-                >
-                  View Franchise Details →
-                </button>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </section>
