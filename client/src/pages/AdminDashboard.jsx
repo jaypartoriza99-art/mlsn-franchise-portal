@@ -18,7 +18,7 @@ import {
   buildTicketAnalytics,
   fetchDashboardAnalytics,
 } from '../services/dashboard/DashboardAnalytics'
-
+import WebsiteManagement from './WebsiteManagement'
 const SLA_HOURS = {
   Urgent: 4,
   High: 24,
@@ -117,6 +117,9 @@ function AdminDashboard({ onLogout }) {
     showUserManagement,
     setShowUserManagement,
   ] = useState(false)
+
+
+  const [showWebsiteManagement, setShowWebsiteManagement] = useState(false)
 
   const [
     showAnnouncementManagement,
@@ -940,6 +943,14 @@ function AdminDashboard({ onLogout }) {
     )
   }
 
+  if (showWebsiteManagement) {
+  return (
+    <WebsiteManagement
+      onBack={() => setShowWebsiteManagement(false)}
+    />
+  )
+}
+
   if (selectedTicket) {
     return (
       <AdminTicketDetails
@@ -1335,46 +1346,50 @@ return (
       />
 
       <DashboardFocusActions
-        overdueCount={overdueCount}
-        nearSlaCount={nearSlaCount}
-        submittedCount={submittedCount}
-        canManageUsers={canManageUsers}
-        canManageAnnouncements={canManageAnnouncements}
-        isSupervisor={normalizedUserRole === 'supervisor'}
-        onShowOverdue={() => {
-          setSlaFilter('Overdue')
-          setStatusFilter('All')
-          setPriorityFilter('All')
-          setShowMyTickets(false)
-        }}
-        onShowNearSla={() => {
-          setSlaFilter('Near SLA')
-          setStatusFilter('All')
-          setPriorityFilter('All')
-          setShowMyTickets(false)
-        }}
-        onShowSubmitted={() => {
-          setStatusFilter('Submitted')
-          setPriorityFilter('All')
-          setSlaFilter('All')
-          setShowMyTickets(false)
-        }}
-        onOpenUserManagement={() => {
-          setShowNotifications(false)
-          setShowUserManagement(true)
-        }}
-        onOpenAnnouncements={() => {
-          setShowNotifications(false)
-          setShowAnnouncementManagement(true)
-        }}
-        onOpenInquiries={() => {
-          setShowNotifications(false)
-          setShowInquiryManagement(true)
-        }}
-        onOpenSurveyAnalytics={() => {
-          setShowNotifications(false)
-          setShowSurveyDashboard(true)
-        }}
+  overdueCount={overdueCount}
+  nearSlaCount={nearSlaCount}
+  submittedCount={submittedCount}
+  canManageUsers={canManageUsers}
+  canManageAnnouncements={canManageAnnouncements}
+  isSupervisor={normalizedUserRole === 'supervisor'}
+  onShowOverdue={() => {
+    setSlaFilter('Overdue')
+    setStatusFilter('All')
+    setPriorityFilter('All')
+    setShowMyTickets(false)
+  }}
+  onShowNearSla={() => {
+    setSlaFilter('Near SLA')
+    setStatusFilter('All')
+    setPriorityFilter('All')
+    setShowMyTickets(false)
+  }}
+  onShowSubmitted={() => {
+    setStatusFilter('Submitted')
+    setPriorityFilter('All')
+    setSlaFilter('All')
+    setShowMyTickets(false)
+  }}
+  onOpenUserManagement={() => {
+    setShowNotifications(false)
+    setShowUserManagement(true)
+  }}
+  onOpenAnnouncements={() => {
+    setShowNotifications(false)
+    setShowAnnouncementManagement(true)
+  }}
+  onOpenInquiries={() => {
+    setShowNotifications(false)
+    setShowInquiryManagement(true)
+  }}
+  onOpenSurveyAnalytics={() => {
+    setShowNotifications(false)
+    setShowSurveyDashboard(true)
+  }}
+  onOpenWebsiteManagement={() => {
+    setShowNotifications(false)
+    setShowWebsiteManagement(true)
+  }}
       />
 
       <AdminDashboardToolbar
